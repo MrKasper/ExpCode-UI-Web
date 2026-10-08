@@ -1,55 +1,15 @@
-# Nova UI — UI-Kit для Web-App
-
-Многофайловый стайлгайд + библиотека компонентов. Без сборки.
-Tailwind Play CDN + Lucide + Vanilla JS.
-
-## Запуск
-Открыть `index.html` в браузере. Всё работает из `file://`.
-
-## Ключевые принципы
-- **Токены в CSS-переменных**, а не в классах. Тема меняет переменные — компоненты перекрашиваются сами.
-- **Палитра и mode независимы**: `data-theme="midnight"` + `.dark` на `<html>`.
-- **Density / Radius** — пресеты через `data-density` / `data-radius`.
-- **Никаких dark:-классов** в разметке — только семантические утилиты (`bg-surface`, `text-ink`).
-
-## Темы (7)
-nova · midnight · sunset · forest · corporate · mono · brutal
-
-## Как добавить новую страницу
-```html
-<link rel="stylesheet" href="../assets/css/tokens.css">
-<link rel="stylesheet" href="../assets/css/base.css">
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="../assets/js/tailwind.config.js"></script>
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-<script src="../assets/js/theme.js"></script>
-<script src="../assets/js/ui.js"></script>
-
-
----
-
-## 🎨 `assets/css/tokens.css`
-
-```css
 /* ═══════════════════════════════════════════════════════════
    Nova UI — Design Tokens
-   Порядок слоёв:
-   1. Шкала (radius, spacing, motion, density, radius preset)
-   2. Поверхности (light / dark)
-   3. Статусные цвета (warn / danger / info)
-   4. Палитры тем (7 шт) — только primary + accent
    ═══════════════════════════════════════════════════════════ */
 
 :root {
   --radius-scale: 1;
   --space-scale: 1;
 
-  --r-xs: calc(6px  * var(--radius-scale));
   --r-sm: calc(8px  * var(--radius-scale));
   --r-md: calc(12px * var(--radius-scale));
   --r-lg: calc(16px * var(--radius-scale));
   --r-xl: calc(24px * var(--radius-scale));
-  --r-2xl:calc(32px * var(--radius-scale));
 
   --dur-fast: 150ms;
   --dur-base: 250ms;
@@ -57,13 +17,13 @@ nova · midnight · sunset · forest · corporate · mono · brutal
   --ease: cubic-bezier(.2, .8, .2, 1);
 }
 
-/* Пресеты radius / density */
-[data-radius="sharp"]  { --radius-scale: .4; }
-[data-radius="pill"]   { --radius-scale: 1.6; }
-[data-density="compact"]     { --space-scale: .8; }
+[data-radius="sharp"] { --radius-scale: .45; }
+[data-radius="pill"]  { --radius-scale: 1.6;  }
+
+[data-density="compact"]     { --space-scale: .85; }
 [data-density="comfortable"] { --space-scale: 1.15; }
 
-/* ─── Поверхности: light (по умолчанию) ─── */
+/* ─── Дефолт: light ─── */
 :root {
   --c-bg:         246 247 251;
   --c-bg-soft:    238 241 248;
@@ -74,8 +34,11 @@ nova · midnight · sunset · forest · corporate · mono · brutal
   --c-ink:         15  23  42;
   --c-ink-2:       70  81 107;
   --c-muted:      138 148 171;
-}
 
+  --c-warn:        245 158  11;  --c-warn-soft:   254 243 226;
+  --c-danger:      239  68  68;  --c-danger-soft: 253 236 236;
+  --c-info:         14 165 233;  --c-info-soft:   230 245 253;
+}
 html.dark {
   --c-bg:          7  11  20;
   --c-bg-soft:    11  17  30;
@@ -86,92 +49,123 @@ html.dark {
   --c-ink:       232 236 245;
   --c-ink-2:     168 179 201;
   --c-muted:     107 118 144;
-}
 
-/* ─── Статусные цвета ─── */
-:root {
-  --c-warn:        245 158  11;  --c-warn-soft:   254 243 226;
-  --c-danger:      239  68  68;  --c-danger-soft: 253 236 236;
-  --c-info:         14 165 233;  --c-info-soft:   230 245 253;
-}
-html.dark {
   --c-warn:        251 191  36;  --c-warn-soft:    60  42  10;
   --c-danger:      248 113 113;  --c-danger-soft:  60  20  20;
   --c-info:         56 189 248;  --c-info-soft:    10  40  58;
 }
 
-/* ─── ТЕМЫ ────────────────────────────────────────────────
-   Каждая тема задаёт только primary + accent (+soft / ink).
-   Светлая и тёмная версии — отдельными селекторами.
-   ──────────────────────────────────────────────────────── */
+/* ═══════════════ ТЕМЫ ═══════════════ */
 
-/* 1 · NOVA — indigo + emerald (по умолчанию) */
+/* 1 · NOVA — indigo + emerald */
 [data-theme="nova"] {
+  --c-bg: 246 247 251;  --c-bg-soft: 238 241 248;
+  --c-surface: 255 255 255;  --c-surface-2: 248 250 252;
+  --c-line: 230 233 240;  --c-line-2: 215 220 232;
   --c-primary: 99 102 241;  --c-primary-soft: 238 240 255;  --c-primary-ink: 67 56 202;
   --c-accent:  16 185 129;  --c-accent-soft:  231 248 241;
 }
 html.dark[data-theme="nova"] {
+  --c-bg: 7 11 20;  --c-bg-soft: 11 17 30;
+  --c-surface: 15 22 38;  --c-surface-2: 19 28 47;
+  --c-line: 30 39 64;  --c-line-2: 42 53 84;
   --c-primary: 129 140 248;  --c-primary-soft: 30 32 66;  --c-primary-ink: 165 180 252;
   --c-accent:   52 211 153;  --c-accent-soft:  13 45 36;
 }
 
-/* 2 · MIDNIGHT — purple + cyan (неон) */
+/* 2 · MIDNIGHT — purple + cyan */
 [data-theme="midnight"] {
+  --c-bg: 250 248 255;  --c-bg-soft: 244 240 253;
+  --c-surface: 255 255 255;  --c-surface-2: 250 246 255;
+  --c-line: 234 227 246;  --c-line-2: 218 208 238;
   --c-primary: 168  85 247;  --c-primary-soft: 246 236 254;  --c-primary-ink: 126 34 206;
   --c-accent:   34 211 238;  --c-accent-soft:  224 250 253;
 }
 html.dark[data-theme="midnight"] {
+  --c-bg: 11 7 25;  --c-bg-soft: 16 10 34;
+  --c-surface: 20 12 40;  --c-surface-2: 27 17 50;
+  --c-line: 42 28 68;  --c-line-2: 58 40 88;
   --c-primary: 192 132 252;  --c-primary-soft: 45 22 66;  --c-primary-ink: 216 180 254;
   --c-accent:   34 211 238;  --c-accent-soft:  10 46 56;
 }
 
 /* 3 · SUNSET — orange + pink */
 [data-theme="sunset"] {
+  --c-bg: 255 250 245;  --c-bg-soft: 255 243 233;
+  --c-surface: 255 255 255;  --c-surface-2: 255 248 242;
+  --c-line: 246 229 214;  --c-line-2: 237 214 194;
   --c-primary: 249 115  22;  --c-primary-soft: 255 240 226;  --c-primary-ink: 194  65  12;
   --c-accent:  236  72 153;  --c-accent-soft:  253 232 242;
 }
 html.dark[data-theme="sunset"] {
+  --c-bg: 26 12 8;  --c-bg-soft: 36 17 10;
+  --c-surface: 40 19 12;  --c-surface-2: 52 26 16;
+  --c-line: 74 38 22;  --c-line-2: 98 52 32;
   --c-primary: 251 146  60;  --c-primary-soft: 60 30 10;  --c-primary-ink: 253 186 116;
   --c-accent:  244 114 182;  --c-accent-soft:  60 20 44;
 }
 
 /* 4 · FOREST — green + yellow */
 [data-theme="forest"] {
+  --c-bg: 246 252 246;  --c-bg-soft: 236 248 236;
+  --c-surface: 255 255 255;  --c-surface-2: 244 252 244;
+  --c-line: 220 236 220;  --c-line-2: 200 222 200;
   --c-primary:  22 163  74;  --c-primary-soft: 220 252 231;  --c-primary-ink:  21 128  61;
   --c-accent:  234 179   8;  --c-accent-soft:  254 249 195;
 }
 html.dark[data-theme="forest"] {
+  --c-bg: 6 18 10;  --c-bg-soft: 10 26 14;
+  --c-surface: 12 30 16;  --c-surface-2: 16 38 20;
+  --c-line: 26 54 32;  --c-line-2: 38 74 46;
   --c-primary:  74 222 128;  --c-primary-soft: 10 45 25;  --c-primary-ink: 134 239 172;
   --c-accent:  250 204  21;  --c-accent-soft:  50 40 10;
 }
 
 /* 5 · CORPORATE — navy + sky */
 [data-theme="corporate"] {
+  --c-bg: 246 249 253;  --c-bg-soft: 236 243 252;
+  --c-surface: 255 255 255;  --c-surface-2: 244 249 254;
+  --c-line: 226 235 245;  --c-line-2: 208 221 236;
   --c-primary:  30  64 175;  --c-primary-soft: 226 234 254;  --c-primary-ink: 30 58 138;
   --c-accent:   14 165 233;  --c-accent-soft:  224 242 254;
 }
 html.dark[data-theme="corporate"] {
+  --c-bg: 6 12 22;  --c-bg-soft: 10 18 32;
+  --c-surface: 12 22 38;  --c-surface-2: 16 28 48;
+  --c-line: 26 42 68;  --c-line-2: 38 58 90;
   --c-primary:  96 165 250;  --c-primary-soft: 15 30 60;  --c-primary-ink: 147 197 253;
   --c-accent:   56 189 248;  --c-accent-soft: 10 40 58;
 }
 
 /* 6 · MONO — grayscale */
 [data-theme="mono"] {
+  --c-bg: 249 250 251;  --c-bg-soft: 243 244 246;
+  --c-surface: 255 255 255;  --c-surface-2: 249 250 251;
+  --c-line: 229 231 235;  --c-line-2: 209 213 219;
   --c-primary:  17  24  39;  --c-primary-soft: 229 231 235;  --c-primary-ink:  17 24 39;
   --c-accent:  100 116 139;  --c-accent-soft: 241 245 249;
 }
 html.dark[data-theme="mono"] {
+  --c-bg: 10 10 10;  --c-bg-soft: 16 16 16;
+  --c-surface: 20 20 20;  --c-surface-2: 26 26 26;
+  --c-line: 38 38 38;  --c-line-2: 54 54 54;
   --c-primary: 226 232 240;  --c-primary-soft: 30 41 59;  --c-primary-ink: 241 245 249;
   --c-accent:  148 163 184;  --c-accent-soft:  30 41 59;
 }
 
-/* 7 · BRUTAL — black + yellow (neo-brutalism) */
+/* 7 · BRUTAL — black + yellow */
 [data-theme="brutal"] {
+  --c-bg: 255 255 255;  --c-bg-soft: 255 255 255;
+  --c-surface: 255 255 255;  --c-surface-2: 255 250 224;
+  --c-line: 0 0 0;  --c-line-2: 0 0 0;
   --c-primary:   0   0   0;  --c-primary-soft: 250 204  21;  --c-primary-ink:   0   0   0;
   --c-accent:  250 204  21;  --c-accent-soft:  244 114 182;
-  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 18px;
+  --radius-scale: .5;
 }
 html.dark[data-theme="brutal"] {
+  --c-bg: 0 0 0;  --c-bg-soft: 10 10 10;
+  --c-surface: 15 15 15;  --c-surface-2: 25 25 25;
+  --c-line: 250 204 21;  --c-line-2: 250 204 21;
   --c-primary: 250 204  21;  --c-primary-soft:  30  30  30;  --c-primary-ink: 250 204  21;
   --c-accent:  244 114 182;  --c-accent-soft:  60  20  44;
 }

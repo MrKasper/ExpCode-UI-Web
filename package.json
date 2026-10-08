@@ -1,0 +1,34 @@
+{
+  "name": "nova-ui-kit",
+  "version": "1.0.0",
+  "description": "Компонентная система для веб-приложений: 7 тем, density/radius пресеты, 40+ компонентов на Tailwind + Vanilla JS",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/nova.js",
+  "module": "dist/nova.js",
+  "style": "dist/nova.css",
+  "bin": {
+    "nova": "./bin/nova.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "tailwind",
+    "README.md"
+  ],
+  "keywords": ["ui-kit", "tailwind", "design-system", "components", "nova"],
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "npx serve .",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "tailwindcss": ">=3.0.0"
+  },
+  "dependencies": {
+    "lucide-static": "^0.400.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}

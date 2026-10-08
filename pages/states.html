@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="nova">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Состояния · Nova UI</title>
+<meta name="theme-color" content="#f6f7fb">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="../assets/js/tailwind.config.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/ui.js"></script>
+</head>
+<body class="bg-bg text-ink min-h-screen">
+
+<header class="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur">
+  <div class="max-w-6xl mx-auto flex items-center gap-3 px-5 h-14">
+    <a href="../index.html" class="btn btn-sm btn-ghost btn-icon"><i data-lucide="arrow-left" class="w-4 h-4"></i></a>
+    <div class="font-display font-extrabold tracking-tight">Состояния</div>
+    <div class="ml-auto flex items-center gap-2">
+      <button class="btn btn-sm btn-ghost btn-icon" onclick="NovaTheme.toggleMode()"><i data-lucide="sun-moon" class="w-4 h-4"></i></button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-5 py-10">
+  <div class="mb-8">
+    <h2 class="font-display text-3xl font-extrabold tracking-tight">Состояния экранов</h2>
+    <p class="text-ink-2 mt-2 max-w-2xl">Готовые макеты для пустых, ошибочных и служебных состояний. Все с иконкой, текстом и основным CTA.</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-5">
+
+    <!-- 01 Empty first-run -->
+    <div class="card p-10 text-center">
+      <div class="grid place-items-center w-16 h-16 mx-auto rounded-2xl bg-primary-soft text-primary-ink mb-5">
+        <i data-lucide="rocket" class="w-8 h-8"></i>
+      </div>
+      <h3 class="font-display text-xl font-bold">Добро пожаловать!</h3>
+      <p class="text-sm text-ink-2 mt-2 max-w-xs mx-auto">Создайте первый проект, чтобы начать отслеживать задачи команды.</p>
+      <button class="btn btn-md btn-primary mt-6 mx-auto" onclick="NovaUI.toast('Проект создан','success')">
+        <i data-lucide="plus" class="w-4 h-4"></i> Создать проект
+      </button>
+    </div>
+
+    <!-- 02 Empty filter -->
+    <div class="card p-10 text-center">
+      <div class="grid place-items-center w-16 h-16 mx-auto rounded-2xl bg-surface-2 text-muted mb-5">
+        <i data-lucide="search-x" class="w-8 h-8"></i>
+      </div>
+      <h3 class="font-display text-xl font-bold">Ничего не найдено</h3>
+      <p class="text-sm text-ink-2 mt-2 max-w-xs mx-auto">Попробуйте изменить фильтры или сбросить поиск.</p>
+      <button class="btn btn-md btn-secondary mt-6 mx-auto">
+        <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Сбросить фильтры
+      </button>
+    </div>
+
+    <!-- 03 Error 500 -->
+    <div class="card p-10 text-center">
+      <div class="grid place-items-center w-16 h-16 mx-auto rounded-2xl bg-danger-soft text-danger mb-5">
+        <i data-lucide="server-crash" class="w-8 h-8"></i>
+      </div>
+      <div class="text-xs font-mono text-muted mb-1">500</div>
+      <h3 class="font-display text-xl font-bold">Что-то пошло не так</h3>
+      <p class="text-sm text-ink-2 mt-2 max-w-xs mx-auto">Сервер не отвечает. Мы уже знаем о проблеме и работаем над ней.</p>
+      <div class="flex gap-2 justify-center mt-6">
+        <button class="btn btn-md btn-secondary"><i data-lucide="life-buoy" class="w-4 h-4"></i> Поддержка</button>
+        <button class="btn btn-md btn-primary" onclick="NovaUI.toast('Перезагружаем…','info')"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Повторить</button>
+      </div>
+    </div>
+
+    <!-- 04 Offline -->
+    <div class="card p-10 text-center">
+      <div class="grid place-items-center w-16 h-16 mx-auto rounded-2xl bg-warn-soft text-warn mb-5">
+        <i data-lucide="wifi-off" class="w-8 h-8"></i>
+      </div>
+      <h3 class="font-display text-xl font-bold">Нет соединения</h3>
+      <p class="text-sm text-ink-2 mt-2 max-w-xs mx-auto">Проверьте подключение к интернету. Мы восстановим работу автоматически.</p>
+      <div class="inline-flex items-center gap-2 mt-6 text-sm text-muted">
+        <span class="w-2 h-2 rounded-full bg-warn animate-pulse"></span> Пытаемся подключиться…
+      </div>
+    </div>
+
+    <!-- 05 404 -->
+    <div class="card p-10 text-center">
+      <div class="font-display text-6xl font-extrabold text-primary">404</div>
+      <h3 class="font-display text-xl font-bold mt-3">Страница не найдена</h3>
+      <p class="text-sm text-ink-2 mt-2 max-w-xs mx-auto">Возможно, ссылка устарела или страница была удалена.</p>
+      <div class="flex gap-2 justify-center mt-6">
+        <button class="btn btn-md btn-ghost" onclick="history.back()"><i data-lucide="arrow-left" class="w-4 h-4"></i> Назад</button>
+        <a href="../index.html" class="btn btn-md btn-primary">На главную <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+      </div>
+    </div>
+
+    <!-- 06 Maintenance -->
+    <div class="card p-10 text-center">
+      <div class="grid place-items-center w-16 h-16 mx-auto rounded-2xl bg-info-soft text-info mb-5">
+        <i data-lucide="wrench" class="w-8 h-8"></i>
+      </div>
+      <h3 class="font-display text-xl font-bold">Технические работы</h3>
+      <p class="text-sm text-ink-2 mt-2 max-w-xs mx-auto">Вернёмся через 15 минут. Спасибо за терпение.</p>
+      <div class="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-surface-2 border border-line text-xs text-muted">
+        <i data-lucide="clock" class="w-3.5 h-3.5"></i> Ожидаемое время: <b class="text-ink">14:30</b>
+      </div>
+    </div>
+
+    <!-- 07 Empty list small -->
+    <div class="card p-6 text-center md:col-span-2">
+      <div class="flex flex-col items-center">
+        <div class="grid place-items-center w-12 h-12 rounded-xl bg-surface-2 text-muted mb-3">
+          <i data-lucide="inbox" class="w-6 h-6"></i>
+        </div>
+        <div class="font-medium">Задач нет</div>
+        <div class="text-sm text-muted mt-1">Все задачи выполнены — можно отдохнуть 🎉</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

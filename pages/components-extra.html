@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="nova">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Компоненты II · Nova UI</title>
+<meta name="theme-color" content="#f6f7fb">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="../assets/js/tailwind.config.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/ui.js"></script>
+<style>
+  .pop {
+    position: absolute; z-index: 45;
+    background: rgb(var(--c-surface));
+    border: 1px solid rgb(var(--c-line));
+    border-radius: var(--r-lg);
+    box-shadow: 0 18px 40px -18px rgb(16 24 40 / .3);
+    opacity: 0; visibility: hidden; transform: translateY(-6px);
+    transition: all var(--dur-fast) var(--ease);
+  }
+  .pop.open { opacity: 1; visibility: visible; transform: none; }
+
+  /* Calendar */
+  .cal { width: 280px; padding: 12px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-dow { font-size: 11px; color: rgb(var(--c-muted)); text-align: center; padding: 6px 0; font-weight: 600; }
+  .cal-day {
+    height: 34px; border-radius: var(--r-sm);
+    font-size: 13px; background: transparent; border: 0; cursor: pointer;
+    color: rgb(var(--c-ink)); font-family: inherit;
+    transition: all var(--dur-fast) var(--ease);
+  }
+  .cal-day:hover:not(:disabled) { background: rgb(var(--c-surface-2)); }
+  .cal-day.mute { color: rgb(var(--c-muted)); opacity: .6; }
+  .cal-day.today { box-shadow: inset 0 0 0 1px rgb(var(--c-primary) / .5); color: rgb(var(--c-primary)); font-weight: 600; }
+  .cal-day.sel { background: rgb(var(--c-primary)); color: #fff; font-weight: 600; }
+  .cal-day.in-range { background: rgb(var(--c-primary) / .12); border-radius: 0; }
+  .cal-day.range-start { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+  .cal-day.range-end { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+  .cal-day:disabled { cursor: not-allowed; opacity: .35; }
+
+  /* Tree */
+  .tree { list-style: none; padding-left: 0; margin: 0; font-size: 14px; }
+  .tree ul { list-style: none; padding-left: 22px; margin: 0; overflow: hidden; max-height: 0; transition: max-height var(--dur-slow) var(--ease); }
+  .tree li.open > ul { max-height: 600px; }
+  .tree-row {
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 6px; border-radius: var(--r-sm);
+    cursor: pointer; transition: background var(--dur-fast) var(--ease);
+  }
+  .tree-row:hover { background: rgb(var(--c-surface-2)); }
+  .tree-row .chev { transition: transform var(--dur-base) var(--ease); color: rgb(var(--c-muted)); }
+  .tree li.open > .tree-row .chev { transform: rotate(90deg); }
+  .tree li:not(:has(ul)) .chev { visibility: hidden; }
+
+  /* Combobox */
+  .cb-list {
+    max-height: 260px; overflow-y: auto; padding: 6px;
+  }
+  .cb-item {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: 8px 10px; border-radius: var(--r-sm);
+    font-size: 13px; color: rgb(var(--c-ink)); background: transparent;
+    border: 0; cursor: pointer; font-family: inherit; text-align: left;
+  }
+  .cb-item:hover, .cb-item.active { background: rgb(var(--c-surface-2)); }
+  .cb-item[aria-selected="true"] { background: rgb(var(--c-primary-soft)); color: rgb(var(--c-primary-ink)); }
+
+  /* Data grid */
+  .grid-th { user-select: none; cursor: pointer; }
+  .grid-th:hover { color: rgb(var(--c-ink)); }
+  .grid-th .ar { transition: transform var(--dur-fast) var(--ease); display: inline-block; }
+  .grid-th[data-dir="asc"] .ar { transform: rotate(180deg); }
+  .grid-th[data-dir="desc"] .ar { transform: rotate(0); }
+  .grid-th:not([data-dir]) .ar { opacity: .3; }
+
+  .bulkbar {
+    position: sticky; bottom: 16px; left: 50%; transform: translateX(-50%);
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 10px 16px; border-radius: 999px;
+    background: rgb(var(--c-ink)); color: rgb(var(--c-bg));
+    box-shadow: 0 18px 40px -18px rgb(16 24 40 / .5);
+    opacity: 0; transform: translateX(-50%) translateY(12px);
+    transition: all var(--dur-base) var(--ease);
+    pointer-events: none;
+  }
+  .bulkbar.show { opacity: 1; transform: translateX(-50%); pointer-events: auto; }
+
+  /* Timeline */
+  .tl { position: relative; padding-left: 28px; }
+  .tl::before {
+    content: ''; position: absolute; left: 11px; top: 6px; bottom: 6px;
+    width: 2px; background: rgb(var(--c-line));
+  }
+  .tl-item { position: relative; padding-bottom: 20px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot {
+    position: absolute; left: -24px; top: 2px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgb(var(--c-surface));
+    border: 2px solid rgb(var(--c-line));
+    display: grid; place-items: center;
+    color: rgb(var(--c-muted));
+  }
+  .tl-dot.primary { border-color: rgb(var(--c-primary)); background: rgb(var(--c-primary)); color: #fff; }
+  .tl-dot.accent  { border-color: rgb(var(--c-accent));  background: rgb(var(--c-accent));  color: #fff; }
+  .tl-dot.warn    { border-color: rgb(var(--c-warn));    background: rgb(var(--c-warn));    color: #fff; }
+  .tl-dot.danger  { border-color: rgb(var(--c-danger));  background: rgb(var(--c-danger));  color: #fff; }
+
+  /* Context menu */
+  #ctx {
+    position: fixed; z-index: 90;
+    min-width: 200px; padding: 6px;
+    background: rgb(var(--c-surface));
+    border: 1px solid rgb(var(--c-line));
+    border-radius: var(--r-md);
+    box-shadow: 0 18px 40px -18px rgb(16 24 40 / .4);
+    display: none;
+  }
+  #ctx.open { display: block; animation: pop-in .16s var(--ease); }
+
+  /* Full-screen loader */
+  .fsl {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgb(var(--c-bg) / .8);
+    backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 16px;
+  }
+  .fsl.open { display: flex; animation: fade .2s ease; }
+
+  .dots span { width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--c-primary)); display: inline-block; animation: bounce 1.2s infinite; }
+  .dots span:nth-child(2) { animation-delay: .15s; }
+  .dots span:nth-child(3) { animation-delay: .3s; }
+  @keyframes bounce { 0%,80%,100% { transform: scale(.6); opacity: .4; } 40% { transform: scale(1); opacity: 1; } }
+</style>
+</head>
+<body class="bg-bg text-ink min-h-screen">
+
+<header class="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur">
+  <div class="max-w-6xl mx-auto flex items-center gap-3 px-5 h-14">
+    <a href="../index.html" class="btn btn-sm btn-ghost btn-icon"><i data-lucide="arrow-left" class="w-4 h-4"></i></a>
+    <div class="font-display font-extrabold tracking-tight">Компоненты II</div>
+    <div class="ml-auto flex items-center gap-2">
+      <button class="btn btn-sm btn-ghost btn-icon" onclick="NovaUI.togglePalette()"><i data-lucide="search" class="w-4 h-4"></i></button>
+      <button class="btn btn-sm btn-ghost btn-icon" onclick="NovaTheme.toggleMode()"><i data-lucide="sun-moon" class="w-4 h-4"></i></button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-5 py-10 space-y-14">
+
+  <!-- Combobox -->
+  <section>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-2">Combobox</h2>
+    <p class="text-ink-2 mb-5 max-w-2xl">Select с поиском, клавиатурной навигацией и подсветкой выбранного.</p>
+    <div class="card p-6">
+      <div class="relative max-w-sm" id="cbWrap">
+        <label class="lbl">Исполнитель</label>
+        <div class="relative">
+          <i data-lucide="user" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted"></i>
+          <input class="inp pl-10 pr-10" id="cbInput" placeholder="Выберите…" autocomplete="off">
+          <i data-lucide="chevrons-up-down" class="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none"></i>
+        </div>
+        <div class="pop left" id="cbPop" style="left:0;right:0;top:calc(100% + 6px)">
+          <div class="cb-list" id="cbList"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Date picker -->
+  <section>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-2">Date picker</h2>
+    <p class="text-ink-2 mb-5 max-w-2xl">Одиночная дата и диапазон с пресетами. Навигация по месяцам, выбор кликом.</p>
+    <div class="card p-6 grid sm:grid-cols-2 gap-5">
+      <div class="relative" id="dpSingleWrap">
+        <label class="lbl">Дата</label>
+        <div class="relative">
+          <i data-lucide="calendar" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted"></i>
+          <input class="inp pl-10" id="dpSingleInput" placeholder="дд.мм.гггг" readonly>
+        </div>
+        <div class="pop" id="dpSinglePop" style="left:0;top:calc(100% + 6px)"></div>
+      </div>
+
+      <div class="relative" id="dpRangeWrap">
+        <label class="lbl">Диапазон</label>
+        <div class="relative">
+          <i data-lucide="calendar-range" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted"></i>
+          <input class="inp pl-10" id="dpRangeInput" placeholder="Выберите диапазон" readonly>
+        </div>
+        <div class="pop" id="dpRangePop" style="left:0;top:calc(100% + 6px)"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Calendar month view -->
+  <section>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-2">Calendar (месяц)</h2>
+    <p class="text-ink-2 mb-5 max-w-2xl">Отдельный компонент с точками-событиями и лентой предстоящих событий.</p>
+    <div class="card p-6 grid md:grid-cols-[auto_1fr] gap-6">
+      <div id="calFull" class="pop open" style="position:static"></div>
+      <div>
+        <div class="text-sm font-semibold mb-3">Предстоящие</div>
+        <div class="tl">
+          <div class="tl-item">
+            <div class="tl-dot primary"><i data-lucide="check" class="w-3 h-3"></i></div>
+            <div class="text-sm font-medium">Спринт-ревью</div>
+            <div class="text-xs text-muted">Сегодня · 14:00</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot accent"><i data-lucide="users" class="w-3 h-3"></i></div>
+            <div class="text-sm font-medium">Встреча с командой дизайна</div>
+            <div class="text-xs text-muted">Завтра · 10:30</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot warn"><i data-lucide="rocket" class="w-3 h-3"></i></div>
+            <div class="text-sm font-medium">Релиз v1.2</div>
+            <div class="text-xs text-muted">12 мая</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot danger"><i data-lucide="alert-circle" class="w-3 h-3"></i></div>
+            <div class="text-sm font-medium">Дедлайн по документации</div>
+            <div class="text-xs text-muted">18 мая</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-2">Timeline / Activity feed</h2>
+    <p class="text-ink-2 mb-5 max-w-2xl">История изменений объекта с аватарами и относительным временем.</p>
+    <div class="card p-6">
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-dot primary"><i data-lucide="plus" class="w-3 h-3"></i></div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-info grid place-items-center text-white text-[10px] font-semibold">ИП</div>
+            <span class="text-sm"><b>Иван Петров</b> создал задачу</span>
+            <span class="text-xs text-muted ml-auto">2 ч назад</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot accent"><i data-lucide="user-plus" class="w-3 h-3"></i></div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-accent to-info grid place-items-center text-white text-[10px] font-semibold">АС</div>
+            <span class="text-sm"><b>Анна Смирнова</b> назначена исполнителем</span>
+            <span class="text-xs text-muted ml-auto">1 ч назад</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot warn"><i data-lucide="edit-3" class="w-3 h-3"></i></div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-warn to-danger grid place-items-center text-white text-[10px] font-semibold">МК</div>
+            <span class="text-sm"><b>Максим Ким</b> изменил приоритет: <span class="badge badge-neutral">Низкий</span> → <span class="badge badge-danger">Высокий</span></span>
+            <span class="text-xs text-muted ml-auto">45 мин назад</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"><i data-lucide="message-square" class="w-3 h-3"></i></div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent grid place-items-center text-white text-[10px] font-semibold">ДВ</div>
+            <span class="text-sm"><b>Дарья Волкова</b> оставила комментарий</span>
+            <span class="text-xs text-muted ml-auto">12 мин назад</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tree view -->
+  <section>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-2">Tree view</h2>
+    <p class="text-ink-2 mb-5 max-w-2xl">Иерархия папок/проектов с плавным раскрытием.</p>
+    <div class="card p-6">
+      <div class="max-w-md">
+        <ul class="tree" id="tree">
+          <li class="open">
+            <div class="tree-row"><i data-lucide="chevron-right" class="chev w-4 h-4"></i><i data-lucide="folder" class="w-4 h-4 text-primary"></i><span>Nova UI</span></div>
+            <ul>
+              <li class="open">
+                <div class="tree-row"><i data-lucide="chevron-right" class="chev w-4 h-4"></i><i data-lucide="folder" class="w-4 h-4 text-primary"></i><span>Компоненты</span></div>
+                <ul>
+                  <li><div class="tree-row"><i data-lucide="chevron-right" class="chev w-4 h-4"></i><i data-lucide="file-code-2" class="w-4 h-4 text-muted"></i><span>Buttons.tsx</span></div></li>
+                  <li><div class="tree-row"><i data-lucide="chevron-right" class="chev w-4 h-4"></i><i data-lucide="file-code-2" class="w-4 h-4 text-muted"></i><span>Inputs.tsx</span></div></li>
+                  <li><div class="tree-row"><i data-lucide="chevron-right" class="chev w-4 h-4"></i><i data-lucide="file-code-2" class="w-4 h-4 text-muted"></i><span>Modals.tsx</span></div></li>
+                </ul>
+              </li>
+              <li>
+                <div class="tree-row"><i data-lucide="chevron-right" class="chev w-4 h-4"></i><i data-lucide="folder" class="w-4 h-4 text-primary"></i><span>Tokens</span></div>
+                <ul>
+                  <li><div class="tree-row"><i data-lucide="chevron-right" class="chev w-4 h-4"></i><i data-lucide="file-json" class="w-4 h-4 text-muted"></i><span>colors.json</span></div></li>
+                  <li><div class="tree-row"><i data-lucide="chevron-right" class="chev w-4 h-4"></i><i data-lucide="file-json" class="w-4 h-4 text-muted"></i><span>spacing.json</span></div></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <div class="tree-row"><i data-lucide="chevron-right" class="chev w-4 h-4"></i><i data-lucide="folder" class="w-4 h-4 text-primary"></i><span>Marketing Site</span></div>
+            <ul>
+              <li><div class="tree-row"><i data-lucide="chevron-right" class="chev w-4 h-4"></i><i data-lucide="file-code-2" class="w-4 h-4 text-muted"></i><span>index.html</span></div></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Data grid -->
+  <section>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-2">Data grid</h2>
+    <p class="text-ink-2 mb-5 max-w-2xl">Сортировка, выбор строк и плавающая панель массовых действий.</p>
+    <div class="card overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm" id="dgTable">
+          <thead class="bg-surface-2">
+            <tr class="text-left text-xs uppercase tracking-wider text-muted border-b border-line">
+              <th class="px-5 py-3 w-8"><input type="checkbox" id="dgAll" class="w-4 h-4 accent-primary"></th>
+              <th class="px-5 py-3 font-semibold grid-th" data-col="title" data-dir="asc">Задача <span class="ar">▲</span></th>
+              <th class="px-5 py-3 font-semibold grid-th" data-col="status">Статус <span class="ar">▲</span></th>
+              <th class="px-5 py-3 font-semibold grid-th" data-col="priority">Приоритет <span class="ar">▲</span></th>
+              <th class="px-5 py-3 font-semibold grid-th" data-col="due" style="text-align:right">Срок <span class="ar">▲</span></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-line" id="dgBody"></tbody>
+        </table>
+      </div>
+      <div class="p-4 flex justify-center border-t border-line">
+        <div class="bulkbar" id="bulkbar">
+          <span><b id="bulkCount">0</b> выбрано</span>
+          <button class="btn btn-sm" style="background:rgb(var(--c-bg));color:rgb(var(--c-ink))" data-bulk="done"><i data-lucide="check" class="w-3.5 h-3.5"></i> Выполнено</button>
+          <button class="btn btn-sm" style="background:rgb(var(--c-bg));color:rgb(var(--c-ink))" data-bulk="assign"><i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Назначить</button>
+          <button class="btn btn-sm" style="background:rgb(var(--c-danger));color:#fff" data-bulk="delete"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Удалить</button>
+          <button class="btn btn-sm" style="background:transparent;color:rgb(var(--c-bg))" id="bulkClear"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vertical stepper -->
+  <section>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-2">Вертикальный Stepper</h2>
+    <div class="card p-6">
+      <div class="relative" style="padding-left:40px">
+        <div class="absolute" style="left:15px;top:8px;bottom:8px;width:2px;background:rgb(var(--c-line))"></div>
+        <div class="relative pb-8">
+          <div class="absolute grid place-items-center w-8 h-8 rounded-full bg-primary text-white" style="left:-40px;top:0"><i data-lucide="check" class="w-4 h-4"></i></div>
+          <div class="font-medium">Заявка создана</div>
+          <div class="text-xs text-muted mt-1">12 мая · 10:24 · Иван Петров</div>
+        </div>
+        <div class="relative pb-8">
+          <div class="absolute grid place-items-center w-8 h-8 rounded-full bg-primary text-white" style="left:-40px;top:0"><i data-lucide="check" class="w-4 h-4"></i></div>
+          <div class="font-medium">Проверка менеджером</div>
+          <div class="text-xs text-muted mt-1">12 мая · 11:02 · Анна Смирнова</div>
+        </div>
+        <div class="relative pb-8">
+          <div class="absolute grid place-items-center w-8 h-8 rounded-full bg-primary text-white ring-4 ring-primary/20" style="left:-40px;top:0">3</div>
+          <div class="font-medium">Согласование</div>
+          <div class="text-xs text-muted mt-1">В работе</div>
+        </div>
+        <div class="relative">
+          <div class="absolute grid place-items-center w-8 h-8 rounded-full bg-surface-2 border border-line text-muted" style="left:-40px;top:0">4</div>
+          <div class="font-medium text-muted">Отправка клиенту</div>
+          <div class="text-xs text-muted mt-1">Ожидает</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Notification center -->
+  <section>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-2">Notification center</h2>
+    <p class="text-ink-2 mb-5 max-w-2xl">Панель с бейджем непрочитанных, группировкой и кнопкой «Прочитать всё».</p>
+    <div class="card p-6 flex items-start gap-4">
+      <div class="dd">
+        <button class="btn btn-md btn-secondary btn-icon relative" data-dd-trigger>
+          <i data-lucide="bell" class="w-4 h-4"></i>
+          <span class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-danger text-white text-[10px] font-bold grid place-items-center">3</span>
+        </button>
+        <div class="dd-menu right" style="width:340px;padding:0">
+          <div class="flex items-center justify-between px-4 py-3 border-b border-line">
+            <div class="font-semibold text-sm">Уведомления</div>
+            <button class="text-xs text-primary hover:underline">Прочитать всё</button>
+          </div>
+          <div class="max-h-80 overflow-y-auto">
+            <a class="flex gap-3 px-4 py-3 hover:bg-surface-2 border-b border-line" href="#">
+              <div class="w-8 h-8 rounded-lg bg-primary-soft text-primary-ink grid place-items-center shrink-0"><i data-lucide="user-plus" class="w-4 h-4"></i></div>
+              <div class="min-w-0">
+                <div class="text-sm"><b>Анна Смирнова</b> назначила вас исполнителем</div>
+                <div class="text-xs text-muted mt-0.5">2 мин назад</div>
+              </div>
+              <span class="w-2 h-2 rounded-full bg-primary mt-2 shrink-0"></span>
+            </a>
+            <a class="flex gap-3 px-4 py-3 hover:bg-surface-2 border-b border-line" href="#">
+              <div class="w-8 h-8 rounded-lg bg-accent-soft text-accent grid place-items-center shrink-0"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+              <div class="min-w-0">
+                <div class="text-sm">Задача <b>«Интеграция с CRM»</b> завершена</div>
+                <div class="text-xs text-muted mt-0.5">45 мин назад</div>
+              </div>
+              <span class="w-2 h-2 rounded-full bg-primary mt-2 shrink-0"></span>
+            </a>
+            <a class="flex gap-3 px-4 py-3 hover:bg-surface-2 border-b border-line" href="#">
+              <div class="w-8 h-8 rounded-lg bg-warn-soft text-warn grid place-items-center shrink-0"><i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
+              <div class="min-w-0">
+                <div class="text-sm">Дедлайн через 2 дня</div>
+                <div class="text-xs text-muted mt-0.5">1 ч назад</div>
+              </div>
+              <span class="w-2 h-2 rounded-full bg-primary mt-2 shrink-0"></span>
+            </a>
+            <a class="flex gap-3 px-4 py-3 hover:bg-surface-2" href="#">
+              <div class="w-8 h-8 rounded-lg bg-surface-2 text-muted grid place-items-center shrink-0"><i data-lucide="message-square" class="w-4 h-4"></i></div>
+              <div class="min-w-0">
+                <div class="text-sm"><b>Максим Ким</b> оставил комментарий</div>
+                <div class="text-xs text-muted mt-0.5">3 ч назад</div>
+              </div>
+            </a>
+          </div>
+          <div class="p-2 border-t border-line">
+            <a class="dd-item justify-center text-primary" href="#">Показать все →</a>
+          </div>
+        </div>
+      </div>
+      <div class="text-sm text-muted">Откройте панель — увидите группировку и непрочитанные.</div>
+    </div>
+  </section>
+
+  <!-- Popover / Context menu -->
+  <section>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-2">Popover и контекстное меню</h2>
+    <p class="text-ink-2 mb-5 max-w-2xl">Первый привязан к кнопке, второе открывается по правому клику.</p>
+    <div class="card p-6 flex flex-wrap gap-3">
+      <div class="dd" id="popWrap">
+        <button class="btn btn-md btn-secondary" data-dd-trigger><i data-lucide="sliders-horizontal" class="w-4 h-4"></i> Фильтры</button>
+        <div class="dd-menu left" style="width:280px;padding:14px">
+          <div class="text-sm font-semibold mb-3">Фильтры</div>
+          <div class="space-y-3">
+            <div>
+              <label class="lbl">Статус</label>
+              <select class="inp"><option>Все</option><option>В работе</option><option>Готово</option></select>
+            </div>
+            <div>
+              <label class="lbl">Приоритет</label>
+              <div class="flex flex-wrap gap-1.5">
+                <button class="chip">Низкий</button>
+                <button class="chip">Средний</button>
+                <button class="chip">Высокий</button>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-line">
+            <button class="btn btn-sm btn-ghost">Сброс</button>
+            <button class="btn btn-sm btn-primary">Применить</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-6 flex-1 min-w-[240px] cursor-context-menu" id="ctxTarget">
+        <div class="text-sm font-medium">Правый клик по этой области</div>
+        <div class="text-xs text-muted mt-1">Откроется контекстное меню в точке курсора.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toasts / loaders -->
+  <section>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-2">Прогресс-тост и загрузчики</h2>
+    <div class="card p-6 flex flex-wrap gap-3">
+      <button class="btn btn-md btn-primary" onclick="progressToast()"><i data-lucide="upload" class="w-4 h-4"></i> Прогресс-тост</button>
+      <button class="btn btn-md btn-secondary" onclick="document.getElementById('fsl').classList.add('open'); setTimeout(()=>document.getElementById('fsl').classList.remove('open'), 1500)">
+        <i data-lucide="loader" class="w-4 h-4"></i> Full-screen loader
+      </button>
+      <div class="inline-flex items-center gap-2 px-4 h-10 rounded-xl bg-surface-2 border border-line">
+        <span class="dots"><span></span><span></span><span></span></span>
+        <span class="text-sm text-muted">Загрузка</span>
+      </div>
+      <div class="inline-flex items-center gap-2 px-4 h-10 rounded-xl bg-surface-2 border border-line">
+        <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-primary"></i>
+        <span class="text-sm">Синхронизация…</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chip input -->
+  <section>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-2">Chip input</h2>
+    <p class="text-ink-2 mb-5 max-w-2xl">Ввод тегов с добавлением по Enter и удалением по клику.</p>
+    <div class="card p-6">
+      <label class="lbl">Теги</label>
+      <div class="inp flex flex-wrap gap-1.5 h-auto py-1.5" style="min-height:44px" id="chipBox">
+        <span class="chip">design <button class="x" data-chip><i data-lucide="x" class="w-3 h-3"></i></button></span>
+        <span class="chip">frontend <button class="x" data-chip><i data-lucide="x" class="w-3 h-3"></i></button></span>
+        <input id="chipInput" class="flex-1 min-w-[120px] bg-transparent border-0 outline-none text-sm text-ink" placeholder="Добавить тег…">
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Context menu -->
+<div id="ctx">
+  <button class="dd-item"><i data-lucide="eye" class="w-4 h-4"></i> Открыть</button>
+  <button class="dd-item"><i data-lucide="edit-3" class="w-4 h-4"></i> Редактировать</button>
+  <button class="dd-item"><i data-lucide="copy" class="w-4 h-4"></i> Дублировать</button>
+  <div class="dd-sep"></div>
+  <button class="dd-item"><i data-lucide="share-2" class="w-4 h-4"></i> Поделиться</button>
+  <button class="dd-item danger"><i data-lucide="trash-2" class="w-4 h-4"></i> Удалить</button>
+</div>
+
+<!-- Full-screen loader -->
+<div id="fsl" class="fsl">
+  <div class="grid place-items-center w-14 h-14 rounded-2xl bg-primary text-white shadow-pop">
+    <i data-lucide="loader-2" class="w-7 h-7 animate-spin"></i>
+  </div>
+  <div class="text-sm text-ink-2">Загружаем данные…</div>
+</div>
+
+<!-- ⌘K palette -->
+<div id="nova-palette" class="modal">
+  <div class="absolute inset-0 bg-ink/40 backdrop-blur-sm" onclick="NovaUI.togglePalette()"></div>
+  <div class="modal-card" style="max-width:560px;align-self:flex-start;margin-top:12vh">
+    <div class="flex items-center gap-3 px-4 h-14 border-b border-line">
+      <i data-lucide="search" class="w-5 h-5 text-muted"></i>
+      <input class="w-full bg-transparent border-0 outline-none text-ink placeholder:text-muted" placeholder="Поиск команд…">
+      <kbd class="text-[11px] px-2 py-1 rounded bg-surface-2 border border-line text-muted">ESC</kbd>
+    </div>
+    <div id="nova-palette-list" class="p-2 max-h-[50vh] overflow-y-auto"></div>
+  </div>
+</div>
+
+<script>
+lucide.createIcons();
+document.addEventListener('keydown', function (e) {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') setTimeout(function(){ lucide.createIcons(); }, 20);
+});
+
+/* ═══ Combobox ═══ */
+(function () {
+  var PEOPLE = [
+    { id: 'ip', name: 'Иван Петров',      role: 'Product Designer',     initials: 'ИП', grad: 'from-primary to-info' },
+    { id: 'as', name: 'Анна Смирнова',    role: 'Frontend Developer',   initials: 'АС', grad: 'from-accent to-info' },
+    { id: 'mk', name: 'Максим Ким',       role: 'Backend Engineer',     initials: 'МК', grad: 'from-warn to-danger' },
+    { id: 'dv', name: 'Дарья Волкова',    role: 'QA Engineer',          initials: 'ДВ', grad: 'from-primary to-accent' },
+    { id: 'oe', name: 'Олег Ефимов',      role: 'DevOps',               initials: 'ОЕ', grad: 'from-info to-primary' },
+  ];
+  var input = document.getElementById('cbInput');
+  var pop = document.getElementById('cbPop');
+  var list = document.getElementById('cbList');
+  var query = '', active = 0, filtered = PEOPLE, selectedId = null;
+
+  function render() {
+    filtered = PEOPLE.filter(function (p) { return p.name.toLowerCase().includes(query.toLowerCase()); });
+    if (!filtered.length) { list.innerHTML = '<div class="px-3 py-6 text-sm text-muted text-center">Ничего не найдено</div>'; return; }
+    list.innerHTML = filtered.map(function (p, i) {
+      return '<button type="button" class="cb-item' + (i === active ? ' active' : '') + '" data-id="' + p.id + '" aria-selected="' + (p.id === selectedId) + '">' +
+        '<span class="w-7 h-7 rounded-full bg-gradient-to-br ' + p.grad + ' grid place-items-center text-white text-[10px] font-semibold">' + p.initials + '</span>' +
+        '<span class="flex-1 min-w-0"><span class="block text-sm font-medium truncate">' + p.name + '</span>' +
+        '<span class="block text-xs text-muted truncate">' + p.role + '</span></span>' +
+        (p.id === selectedId ? '<i data-lucide="check" class="w-4 h-4 text-primary"></i>' : '') +
+      '</button>';
+    }).join('');
+    lucide.createIcons();
+  }
+  function open() { pop.classList.add('open'); active = 0; render(); }
+  function close() { pop.classList.remove('open'); }
+  function choose(id) {
+    selectedId = id;
+    var p = PEOPLE.find(function (x) { return x.id === id; });
+    input.value = p ? p.name : '';
+    close();
+    NovaUI.toast('Выбран: ' + (p ? p.name : ''), 'success');
+  }
+  input.addEventListener('focus', open);
+  input.addEventListener('input', function () { query = input.value; active = 0; selectedId = null; render(); });
+  input.addEventListener('keydown', function (e) {
+    if (!pop.classList.contains('open')) { if (e.key === 'ArrowDown') open(); return; }
+    if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, filtered.length - 1); render(); }
+    if (e.key === 'ArrowUp')   { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
+    if (e.key === 'Enter' && filtered[active]) { e.preventDefault(); choose(filtered[active].id); }
+    if (e.key === 'Escape') close();
+  });
+  list.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-id]');
+    if (b) choose(b.dataset.id);
+  });
+  document.addEventListener('click', function (e) {
+    if (!document.getElementById('cbWrap').contains(e.target)) close();
+  });
+})();
+
+/* ═══ Date picker ═══ */
+(function () {
+  var MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+  var DOW = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+
+  function fmt(d) {
+    if (!d) return '';
+    return String(d.getDate()).padStart(2,'0') + '.' +
+           String(d.getMonth() + 1).padStart(2,'0') + '.' + d.getFullYear();
+  }
+  function sameDay(a, b) { return a && b && a.toDateString() === b.toDateString(); }
+
+  function buildCalendar(opts) {
+    // opts: { year, month, selected, rangeStart, rangeEnd, onPrev, onNext, onPick }
+    var wrap = document.createElement('div');
+    wrap.className = 'cal';
+
+    var head = document.createElement('div');
+    head.className = 'flex items-center justify-between mb-3';
+    head.innerHTML =
+      '<button class="btn btn-sm btn-ghost btn-icon" data-nav="prev"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>' +
+      '<div class="font-semibold text-sm">' + MONTHS[opts.month] + ' ' + opts.year + '</div>' +
+      '<button class="btn btn-sm btn-ghost btn-icon" data-nav="next"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>';
+    wrap.appendChild(head);
+
+    var grid = document.createElement('div');
+    grid.className = 'cal-grid';
+    DOW.forEach(function (d) {
+      var el = document.createElement('div');
+      el.className = 'cal-dow';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+
+    var first = new Date(opts.year, opts.month, 1);
+    var startIdx = (first.getDay() + 6) % 7; // Пн=0
+    var daysInMonth = new Date(opts.year, opts.month + 1, 0).getDate();
+    var prevDays = new Date(opts.year, opts.month, 0).getDate();
+    var today = new Date(); today.setHours(0,0,0,0);
+
+    for (var i = 0; i < 42; i++) {
+      var dayNum, inMonth, date;
+      if (i < startIdx) {
+        dayNum = prevDays - startIdx + i + 1;
+        date = new Date(opts.year, opts.month - 1, dayNum);
+        inMonth = false;
+      } else if (i >= startIdx + daysInMonth) {
+        dayNum = i - (startIdx + daysInMonth) + 1;
+        date = new Date(opts.year, opts.month + 1, dayNum);
+        inMonth = false;
+      } else {
+        dayNum = i - startIdx + 1;
+        date = new Date(opts.year, opts.month, dayNum);
+        inMonth = true;
+      }
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cal-day' + (inMonth ? '' : ' mute');
+      btn.textContent = dayNum;
+      btn.dataset.date = date.toISOString();
+
+      if (sameDay(date, today)) btn.classList.add('today');
+      if (sameDay(date, opts.selected)) btn.classList.add('sel');
+      if (opts.rangeStart && opts.rangeEnd) {
+        if (date > opts.rangeStart && date < opts.rangeEnd) {
+          btn.classList.add('in-range');
+          if (sameDay(date, opts.rangeStart)) btn.classList.add('range-start');
+          if (sameDay(date, opts.rangeEnd))   btn.classList.add('range-end');
+        }
+        if (sameDay(date, opts.rangeStart)) { btn.classList.add('sel','range-start'); }
+        if (sameDay(date, opts.rangeEnd))   { btn.classList.add('sel','range-end'); }
+      }
+
+      grid.appendChild(btn);
+    }
+
+    wrap.appendChild(grid);
+    return wrap;
+  }
+
+  /* ─── Single ─── */
+  var sWrap = document.getElementById('dpSingleWrap');
+  var sPop  = document.getElementById('dpSinglePop');
+  var sInp  = document.getElementById('dpSingleInput');
+  var sState = { year: new Date().getFullYear(), month: new Date().getMonth(), selected: null };
+
+  function renderSingle() {
+    sPop.innerHTML = '';
+    sPop.appendChild(buildCalendar({
+      year: sState.year, month: sState.month,
+      selected: sState.selected,
+      onPick: null
+    }));
+    sPop.querySelector('[data-nav="prev"]').onclick = function () {
+      sState.month--; if (sState.month < 0) { sState.month = 11; sState.year--; }
+      renderSingle();
+    };
+    sPop.querySelector('[data-nav="next"]').onclick = function () {
+      sState.month++; if (sState.month > 11) { sState.month = 0; sState.year++; }
+      renderSingle();
+    };
+    sPop.querySelectorAll('.cal-day').forEach(function (b) {
+      b.onclick = function () {
+        sState.selected = new Date(b.dataset.date);
+        sInp.value = fmt(sState.selected);
+        sPop.classList.remove('open');
+        NovaUI.toast('Дата: ' + sInp.value, 'success');
+      };
+    });
+    lucide.createIcons();
+  }
+  sInp.addEventListener('focus', function () { renderSingle(); sPop.classList.add('open'); });
+  document.addEventListener('click', function (e) {
+    if (!sWrap.contains(e.target)) sPop.classList.remove('open');
+  });
+
+  /* ─── Range ─── */
+  var rWrap = document.getElementById('dpRangeWrap');
+  var rPop  = document.getElementById('dpRangePop');
+  var rInp  = document.getElementById('dpRangeInput');
+  var rState = { year: new Date().getFullYear(), month: new Date().getMonth(), start: null, end: null, picking: 'start' };
+
+  function applyPreset(name) {
+    var now = new Date(); now.setHours(0,0,0,0);
+    if (name === 'today')  { rState.start = now; rState.end = now; }
+    if (name === 'yesterday') { var y = new Date(now); y.setDate(y.getDate()-1); rState.start = y; rState.end = y; }
+    if (name === 'last7')  { var s = new Date(now); s.setDate(s.getDate()-6); rState.start = s; rState.end = now; }
+    if (name === 'last30') { var s2 = new Date(now); s2.setDate(s2.getDate()-29); rState.start = s2; rState.end = now; }
+    if (name === 'month')  { rState.start = new Date(now.getFullYear(), now.getMonth(), 1); rState.end = now; }
+    rInp.value = fmt(rState.start) + ' — ' + fmt(rState.end);
+    rState.picking = 'start';
+    renderRange();
+  }
+
+  function renderRange() {
+    rPop.innerHTML = '';
+    var layout = document.createElement('div');
+    layout.style.display = 'flex';
+
+    var presets = document.createElement('div');
+    presets.style.cssText = 'padding:10px;border-right:1px solid rgb(var(--c-line));min-width:150px;display:flex;flex-direction:column;gap:2px';
+    var items = [
+      ['today','Сегодня'],['yesterday','Вчера'],['last7','Последние 7 дней'],
+      ['last30','Последние 30 дней'],['month','Этот месяц']
+    ];
+    items.forEach(function (it) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'dd-item';
+      b.textContent = it[1];
+      b.onclick = function () { applyPreset(it[0]); };
+      presets.appendChild(b);
+    });
+    layout.appendChild(presets);
+
+    var calWrap = document.createElement('div');
+    var cal = buildCalendar({
+      year: rState.year, month: rState.month,
+      rangeStart: rState.start, rangeEnd: rState.end
+    });
+    calWrap.appendChild(cal);
+    layout.appendChild(calWrap);
+
+    rPop.appendChild(layout);
+
+    cal.querySelector('[data-nav="prev"]').onclick = function () {
+      rState.month--; if (rState.month < 0) { rState.month = 11; rState.year--; }
+      renderRange();
+    };
+    cal.querySelector('[data-nav="next"]').onclick = function () {
+      rState.month++; if (rState.month > 11) { rState.month = 0; rState.year++; }
+      renderRange();
+    };
+    cal.querySelectorAll('.cal-day').forEach(function (b) {
+      b.onclick = function () {
+        var d = new Date(b.dataset.date);
+        if (rState.picking === 'start' || (rState.start && rState.end)) {
+          rState.start = d; rState.end = null; rState.picking = 'end';
+        } else {
+          if (d < rState.start) { rState.end = rState.start; rState.start = d; }
+          else rState.end = d;
+          rState.picking = 'start';
+        }
+        if (rState.start && rState.end) {
+          rInp.value = fmt(rState.start) + ' — ' + fmt(rState.end);
+          rPop.classList.remove('open');
+          NovaUI.toast('Диапазон выбран', 'success');
+          return;
+        }
+        renderRange();
+      };
+    });
+
+    lucide.createIcons();
+  }
+  rInp.addEventListener('focus', function () { renderRange(); rPop.classList.add('open'); });
+  document.addEventListener('click', function (e) {
+    if (!rWrap.contains(e.target)) rPop.classList.remove('open');
+  });
+})();
+
+/* ═══ Full calendar ═══ */
+(function () {
+  var host = document.getElementById('calFull');
+  var now = new Date();
+  var state = { year: now.getFullYear(), month: now.getMonth() };
+  var MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+  var DOW = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  var EVENTS = {
+    0: ['primary','accent'], 2: ['warn'], 5: ['primary'], 8: ['accent','danger'],
+    12: ['primary','warn'], 15: ['accent'], 18: ['primary'], 22: ['warn'], 25: ['accent'], 28: ['primary']
+  };
+  function render() {
+    var wrap = document.createElement('div');
+    wrap.className = 'cal';
+
+    var head = document.createElement('div');
+    head.className = 'flex items-center justify-between mb-3';
+    head.innerHTML =
+      '<button class="btn btn-sm btn-ghost btn-icon" data-nav="prev"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>' +
+      '<div class="font-semibold text-sm">' + MONTHS[state.month] + ' ' + state.year + '</div>' +
+      '<button class="btn btn-sm btn-ghost btn-icon" data-nav="next"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>';
+    wrap.appendChild(head);
+
+    var grid = document.createElement('div');
+    grid.className = 'cal-grid';
+    DOW.forEach(function (d) {
+      var el = document.createElement('div'); el.className = 'cal-dow'; el.textContent = d; grid.appendChild(el);
+    });
+    var first = new Date(state.year, state.month, 1);
+    var startIdx = (first.getDay() + 6) % 7;
+    var daysIn = new Date(state.year, state.month + 1, 0).getDate();
+    var prevDays = new Date(state.year, state.month, 0).getDate();
+    var today = new Date(); today.setHours(0,0,0,0);
+
+    for (var i = 0; i < 42; i++) {
+      var dayNum, date, inMonth;
+      if (i < startIdx) { dayNum = prevDays - startIdx + i + 1; date = new Date(state.year, state.month - 1, dayNum); inMonth = false; }
+      else if (i >= startIdx + daysIn) { dayNum = i - (startIdx + daysIn) + 1; date = new Date(state.year, state.month + 1, dayNum); inMonth = false; }
+      else { dayNum = i - startIdx + 1; date = new Date(state.year, state.month, dayNum); inMonth = true; }
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cal-day' + (inMonth ? '' : ' mute');
+      btn.style.position = 'relative';
+      btn.textContent = dayNum;
+      if (date.toDateString() === today.toDateString()) btn.classList.add('today');
+
+      if (inMonth && EVENTS[dayNum]) {
+        var dotWrap = document.createElement('span');
+        dotWrap.style.cssText = 'position:absolute;bottom:4px;left:50%;transform:translateX(-50%);display:flex;gap:2px';
+        EVENTS[dayNum].slice(0, 3).forEach(function (c) {
+          var d = document.createElement('span');
+          d.style.cssText = 'width:4px;height:4px;border-radius:50%;background:rgb(var(--c-' + c + '))';
+          dotWrap.appendChild(d);
+        });
+        btn.appendChild(dotWrap);
+      }
+      grid.appendChild(btn);
+    }
+    wrap.appendChild(grid);
+
+    host.innerHTML = '';
+    host.appendChild(wrap);
+    wrap.querySelector('[data-nav="prev"]').onclick = function () {
+      state.month--; if (state.month < 0) { state.month = 11; state.year--; } render();
+    };
+    wrap.querySelector('[data-nav="next"]').onclick = function () {
+      state.month++; if (state.month > 11) { state.month = 0; state.year++; } render();
+    };
+    lucide.createIcons();
+  }
+  render();
+})();
+
+/* ═══ Tree ═══ */
+document.querySelectorAll('#tree .tree-row').forEach(function (row) {
+  row.addEventListener('click', function () {
+    var li = row.parentElement;
+    if (li.querySelector(':scope > ul')) li.classList.toggle('open');
+  });
+});
+
+/* ═══ Data grid ═══ */
+(function () {
+  var DATA = [
+    { id: 1, title: 'Редизайн главной страницы', status: 'work',     statusLabel: 'В работе',  statusClass: 'badge-primary', priority: 'high',   priorityLabel: 'Высокий',  priorityClass: 'badge-danger',  priorityIcon: 'flame',  due: '2024-05-12' },
+    { id: 2, title: 'Интеграция с CRM',          status: 'pause',    statusLabel: 'На паузе',  statusClass: 'badge-warn',    priority: 'med',    priorityLabel: 'Средний',  priorityClass: 'badge-warn',    priorityIcon: 'minus',  due: '2024-05-18' },
+    { id: 3, title: 'Обновление документации',   status: 'done',     statusLabel: 'Готово',    statusClass: 'badge-accent',  priority: 'low',    priorityLabel: 'Низкий',   priorityClass: 'badge-neutral', priorityIcon: 'arrow-down', due: '2024-05-06' },
+    { id: 4, title: 'A/B тест онбординга',       status: 'overdue',  statusLabel: 'Просрочено',statusClass: 'badge-danger',  priority: 'high',   priorityLabel: 'Высокий',  priorityClass: 'badge-danger',  priorityIcon: 'flame',  due: '2024-05-02' },
+    { id: 5, title: 'Настройка аналитики',       status: 'work',     statusLabel: 'В работе',  statusClass: 'badge-primary', priority: 'med',    priorityLabel: 'Средний',  priorityClass: 'badge-warn',    priorityIcon: 'minus',  due: '2024-05-22' },
+    { id: 6, title: 'Рефакторинг API',           status: 'done',     statusLabel: 'Готово',    statusClass: 'badge-accent',  priority: 'low',    priorityLabel: 'Низкий',   priorityClass: 'badge-neutral', priorityIcon: 'arrow-down', due: '2024-05-09' },
+  ];
+  var state = { sortCol: 'title', sortDir: 'asc', selected: new Set() };
+  var body = document.getElementById('dgBody');
+  var all = document.getElementById('dgAll');
+  var bulkbar = document.getElementById('bulkbar');
+  var bulkCount = document.getElementById('bulkCount');
+
+  function sortRows() {
+    var dir = state.sortDir === 'asc' ? 1 : -1;
+    DATA.sort(function (a, b) {
+      var A = a[state.sortCol], B = b[state.sortCol];
+      if (A < B) return -1 * dir;
+      if (A > B) return 1 * dir;
+      return 0;
+    });
+  }
+
+  function render() {
+    sortRows();
+    body.innerHTML = DATA.map(function (r) {
+      var sel = state.selected.has(r.id) ? ' checked' : '';
+      return '<tr class="hover:bg-surface-2 transition-colors">' +
+        '<td class="px-5 py-4"><input type="checkbox" class="w-4 h-4 accent-primary" data-row="' + r.id + '"' + sel + '></td>' +
+        '<td class="px-5 py-4 font-medium">' + r.title + '</td>' +
+        '<td class="px-5 py-4"><span class="badge ' + r.statusClass + '">' + r.statusLabel + '</span></td>' +
+        '<td class="px-5 py-4"><span class="badge ' + r.priorityClass + '"><i data-lucide="' + r.priorityIcon + '" class="w-3 h-3"></i> ' + r.priorityLabel + '</span></td>' +
+        '<td class="px-5 py-4 text-right text-muted">' + new Date(r.due).toLocaleDateString('ru-RU', {day:'2-digit',month:'short'}) + '</td>' +
+      '</tr>';
+    }).join('');
+    lucide.createIcons();
+
+    body.querySelectorAll('[data-row]').forEach(function (cb) {
+      cb.onchange = function () {
+        var id = +cb.dataset.row;
+        if (cb.checked) state.selected.add(id); else state.selected.delete(id);
+        updateBulk();
+      };
+    });
+
+    all.checked = DATA.length > 0 && state.selected.size === DATA.length;
+    all.indeterminate = state.selected.size > 0 && state.selected.size < DATA.length;
+    updateBulk();
+  }
+
+  function updateBulk() {
+    bulkCount.textContent = state.selected.size;
+    bulkbar.classList.toggle('show', state.selected.size > 0);
+  }
+
+  document.querySelectorAll('.grid-th').forEach(function (th) {
+    th.addEventListener('click', function () {
+      var col = th.dataset.col;
+      if (state.sortCol === col) state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+      else { state.sortCol = col; state.sortDir = 'asc'; }
+      document.querySelectorAll('.grid-th').forEach(function (x) { x.removeAttribute('data-dir'); });
+      th.setAttribute('data-dir', state.sortDir);
+      render();
+    });
+  });
+  document.querySelector('.grid-th[data-col="title"]').setAttribute('data-dir', 'asc');
+
+  all.addEventListener('change', function () {
+    state.selected.clear();
+    if (all.checked) DATA.forEach(function (r) { state.selected.add(r.id); });
+    render();
+  });
+
+  document.getElementById('bulkClear').onclick = function () { state.selected.clear(); render(); };
+
+  bulkbar.querySelectorAll('[data-bulk]').forEach(function (b) {
+    b.onclick = function () {
+      var n = state.selected.size;
+      var labels = { done: 'Отмечено выполненными', assign: 'Назначено', 'delete': 'Удалено' };
+      NovaUI.toast(labels[b.dataset.bulk] + ' (' + n + ')', b.dataset.bulk === 'delete' ? 'warn' : 'success');
+      state.selected.clear();
+      render();
+    };
+  });
+
+  render();
+})();
+
+/* ═══ Context menu ═══ */
+(function () {
+  var ctx = document.getElementById('ctx');
+  var target = document.getElementById('ctxTarget');
+  target.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    var x = Math.min(e.clientX, window.innerWidth - 220);
+    var y = Math.min(e.clientY, window.innerHeight - 260);
+    ctx.style.left = x + 'px';
+    ctx.style.top = y + 'px';
+    ctx.classList.add('open');
+  });
+  document.addEventListener('click', function (e) {
+    if (!ctx.contains(e.target)) ctx.classList.remove('open');
+  });
+  ctx.querySelectorAll('.dd-item').forEach(function (b) {
+    b.onclick = function () { ctx.classList.remove('open'); NovaUI.toast(b.textContent.trim(), 'info'); };
+  });
+})();
+
+/* ═══ Progress toast ═══ */
+function progressToast() {
+  var box = document.getElementById('nova-toasts') || (function () {
+    var b = document.createElement('div');
+    b.id = 'nova-toasts';
+    b.className = 'fixed bottom-4 right-4 z-[80] flex flex-col gap-2 items-end';
+    document.body.appendChild(b);
+    return b;
+  })();
+
+  var el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML =
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0 text-primary"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>' +
+    '<div style="min-width:200px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>Загрузка…</span><span data-pct>0%</span></div>' +
+    '<div style="height:4px;margin-top:6px;border-radius:999px;overflow:hidden;background:rgb(var(--c-surface-2))"><div data-bar style="height:100%;width:0;background:rgb(var(--c-primary));transition:width .15s"></div></div></div>';
+  box.appendChild(el);
+  requestAnimationFrame(function () { el.classList.add('in'); });
+
+  var bar = el.querySelector('[data-bar]');
+  var pct = el.querySelector('[data-pct]');
+  var p = 0;
+  var iv = setInterval(function () {
+    p += Math.random() * 12 + 4;
+    if (p >= 100) {
+      p = 100;
+      clearInterval(iv);
+      setTimeout(function () {
+        el.classList.remove('in');
+        setTimeout(function () { el.remove(); }, 320);
+        NovaUI.toast('Загрузка завершена', 'success');
+      }, 300);
+    }
+    bar.style.width = p + '%';
+    pct.textContent = Math.round(p) + '%';
+  }, 200);
+}
+
+/* ═══ Chip input ═══ */
+(function () {
+  var box = document.getElementById('chipBox');
+  var input = document.getElementById('chipInput');
+  function addChip(text) {
+    text = text.trim();
+    if (!text) return;
+    var chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.innerHTML = text + ' <button class="x" data-chip><i data-lucide="x" class="w-3 h-3"></i></button>';
+    box.insertBefore(chip, input);
+    lucide.createIcons();
+  }
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && input.value.trim()) {
+      e.preventDefault();
+      addChip(input.value);
+      input.value = '';
+    }
+    if (e.key === 'Backspace' && !input.value) {
+      var chips = box.querySelectorAll('.chip');
+      if (chips.length) chips[chips.length - 1].remove();
+    }
+  });
+  box.addEventListener('click', function (e) {
+    if (e.target.closest('[data-chip]')) {
+      e.target.closest('.chip').remove();
+    } else {
+      input.focus();
+    }
+  });
+})();
+</script>
+</body>
+</html>

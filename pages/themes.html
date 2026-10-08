@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="nova">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Темы · Nova UI</title>
+<meta name="theme-color" content="#f6f7fb">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="../assets/js/tailwind.config.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/ui.js"></script>
+<style>
+  .theme-pick {
+    position: relative;
+    transition: transform .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .theme-pick:hover { transform: translateY(-3px); }
+  .theme-pick .swatch {
+    height: 72px; border-radius: var(--r-md);
+    background: linear-gradient(135deg, rgb(var(--sp)), rgb(var(--sa)));
+  }
+  .theme-pick.is-active {
+    box-shadow: 0 0 0 2px rgb(var(--c-primary)), 0 0 0 6px rgb(var(--c-primary) / .18);
+  }
+  .theme-pick.is-active::after {
+    content: '';
+    position: absolute; top: 10px; right: 10px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgb(var(--c-primary));
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-size: 14px; background-position: center; background-repeat: no-repeat;
+  }
+  .mode-btn.is-active {
+    background: rgb(var(--c-primary)) !important;
+    color: #fff !important;
+    border-color: rgb(var(--c-primary)) !important;
+  }
+  .preset-btn.is-active {
+    background: rgb(var(--c-primary)) !important;
+    color: #fff !important;
+    border-color: rgb(var(--c-primary)) !important;
+  }
+</style>
+</head>
+<body class="bg-bg text-ink min-h-screen">
+
+<header class="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur">
+  <div class="max-w-6xl mx-auto flex items-center gap-3 px-5 h-14">
+    <a href="../index.html" class="btn btn-sm btn-ghost btn-icon"><i data-lucide="arrow-left" class="w-4 h-4"></i></a>
+    <div class="font-display font-extrabold tracking-tight">Темы и пресеты</div>
+    <div class="ml-auto flex items-center gap-2">
+      <button class="btn btn-sm btn-secondary mode-btn" data-mode="light">Light</button>
+      <button class="btn btn-sm btn-secondary mode-btn" data-mode="dark">Dark</button>
+      <button class="btn btn-sm btn-secondary mode-btn" data-mode="auto">Auto</button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-5 py-10 space-y-12">
+
+  <section>
+    <h2 class="font-display text-3xl font-extrabold tracking-tight mb-2">Палитры</h2>
+    <p class="text-ink-2 mb-6 max-w-2xl">7 тем. Клик — и вся страница перекрашивается: фон, поверхности, границы, акценты.</p>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" id="themes-grid"></div>
+  </section>
+
+  <section class="grid md:grid-cols-2 gap-5">
+    <div class="card p-6">
+      <div class="text-xs font-medium text-muted uppercase tracking-wider mb-4">Плотность</div>
+      <div class="flex flex-wrap gap-2" id="density-picker">
+        <button class="btn btn-sm btn-secondary preset-btn" data-density="compact">compact</button>
+        <button class="btn btn-sm btn-secondary preset-btn" data-density="normal">normal</button>
+        <button class="btn btn-sm btn-secondary preset-btn" data-density="comfortable">comfortable</button>
+      </div>
+      <p class="text-sm text-ink-2 mt-4">Меняет высоту и отступы кнопок, полей и бейджей.</p>
+    </div>
+    <div class="card p-6">
+      <div class="text-xs font-medium text-muted uppercase tracking-wider mb-4">Радиусы</div>
+      <div class="flex flex-wrap gap-2" id="radius-picker">
+        <button class="btn btn-sm btn-secondary preset-btn" data-radius="sharp">sharp</button>
+        <button class="btn btn-sm btn-secondary preset-btn" data-radius="normal">normal</button>
+        <button class="btn btn-sm btn-secondary preset-btn" data-radius="pill">pill</button>
+      </div>
+      <p class="text-sm text-ink-2 mt-4">Тот же компонент — другая форма.</p>
+    </div>
+  </section>
+
+  <section class="card p-6 sm:p-8 space-y-6">
+    <div class="text-xs font-medium text-muted uppercase tracking-wider">Живое превью</div>
+
+    <div class="grid sm:grid-cols-3 gap-4">
+      <div class="rounded-2xl border border-line bg-surface p-5">
+        <div class="badge badge-primary mb-3">В работе</div>
+        <div class="font-display font-bold text-lg">Редизайн главной</div>
+        <p class="text-sm text-ink-2 mt-1">12 задач · 3 участника</p>
+        <div class="mt-4 flex gap-2">
+          <button class="btn btn-sm btn-primary">Открыть</button>
+          <button class="btn btn-sm btn-ghost btn-icon"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+      <div class="rounded-2xl border border-line bg-surface p-5">
+        <div class="badge badge-accent mb-3">Готово</div>
+        <div class="font-display font-bold text-lg">Интеграция с CRM</div>
+        <p class="text-sm text-ink-2 mt-1">Обновлено 2 часа назад</p>
+        <div class="mt-4 flex gap-2">
+          <button class="btn btn-sm btn-secondary">Детали</button>
+          <button class="btn btn-sm btn-ghost btn-icon"><i data-lucide="star" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+      <div class="rounded-2xl border border-line bg-surface p-5">
+        <div class="badge badge-warn mb-3">На паузе</div>
+        <div class="font-display font-bold text-lg">A/B тест</div>
+        <p class="text-sm text-ink-2 mt-1">Ждёт ревью</p>
+        <div class="mt-4 flex gap-2">
+          <button class="btn btn-sm btn-outline">Резюме</button>
+          <button class="btn btn-sm btn-ghost btn-icon"><i data-lucide="play" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3 items-center">
+      <button class="btn btn-md btn-primary">Primary</button>
+      <button class="btn btn-md btn-soft">Soft</button>
+      <button class="btn btn-md btn-secondary">Secondary</button>
+      <button class="btn btn-md btn-outline">Outline</button>
+      <button class="btn btn-md btn-ghost">Ghost</button>
+      <span class="badge badge-primary">badge</span>
+      <span class="badge badge-accent">badge</span>
+      <span class="badge badge-warn">badge</span>
+      <span class="badge badge-danger">badge</span>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div>
+        <label class="lbl">Email</label>
+        <input class="inp" placeholder="you@company.com">
+      </div>
+      <div>
+        <label class="lbl">Роль</label>
+        <select class="inp"><option>Designer</option><option>Developer</option></select>
+      </div>
+    </div>
+
+    <div class="pbar"><span style="width:64%"></span></div>
+  </section>
+
+</main>
+
+<div id="nova-palette" class="modal">
+  <div class="absolute inset-0 bg-ink/40 backdrop-blur-sm" onclick="NovaUI.closePalette()"></div>
+  <div class="modal-card" style="max-width:560px;align-self:flex-start;margin-top:12vh">
+    <div class="flex items-center gap-3 px-4 h-14 border-b border-line">
+      <i data-lucide="search" class="w-5 h-5 text-muted"></i>
+      <input class="w-full bg-transparent border-0 outline-none text-ink placeholder:text-muted" placeholder="Поиск команд…">
+      <kbd class="text-[11px] px-2 py-1 rounded bg-surface-2 border border-line text-muted">ESC</kbd>
+    </div>
+    <div id="nova-palette-list" class="p-2 max-h-[50vh] overflow-y-auto"></div>
+  </div>
+</div>
+
+<script>
+lucide.createIcons();
+
+/* Каждая тема: id, название, хинт, RGB-пары для превью */
+var THEMES = [
+  { id: 'nova',      name: 'Nova',      hint: 'indigo + emerald', primary: [99,102,241],  accent: [16,185,129] },
+  { id: 'midnight',  name: 'Midnight',  hint: 'purple + cyan',    primary: [168,85,247],  accent: [34,211,238] },
+  { id: 'sunset',    name: 'Sunset',    hint: 'orange + pink',    primary: [249,115,22],  accent: [236,72,153] },
+  { id: 'forest',    name: 'Forest',    hint: 'green + yellow',   primary: [22,163,74],   accent: [234,179,8]  },
+  { id: 'corporate', name: 'Corporate', hint: 'navy + sky',       primary: [30,64,175],   accent: [14,165,233] },
+  { id: 'mono',      name: 'Mono',      hint: 'grayscale',        primary: [17,24,39],    accent: [100,116,139] },
+  { id: 'brutal',    name: 'Brutal',    hint: 'black + yellow',   primary: [0,0,0],       accent: [250,204,21] },
+];
+
+var grid = document.getElementById('themes-grid');
+
+function renderThemes() {
+  grid.innerHTML = THEMES.map(function (t) {
+    return '<button class="theme-pick card p-3 text-left" data-theme-pick="' + t.id + '">' +
+      '<div class="swatch mb-3" style="--sp:' + t.primary.join(' ') + ';--sa:' + t.accent.join(' ') + '"></div>' +
+      '<div class="font-display font-bold text-sm">' + t.name + '</div>' +
+      '<div class="text-xs text-muted mt-0.5">' + t.hint + '</div>' +
+    '</button>';
+  }).join('');
+}
+
+function paintActiveTheme() {
+  var current = NovaTheme.getTheme();
+  document.querySelectorAll('[data-theme-pick]').forEach(function (b) {
+    b.classList.toggle('is-active', b.dataset.themePick === current);
+  });
+}
+
+function paintModeButtons() {
+  var cur = NovaTheme.getMode();
+  document.querySelectorAll('.mode-btn').forEach(function (b) {
+    b.classList.toggle('is-active', b.dataset.mode === cur);
+  });
+}
+
+function paintPresetButtons() {
+  var dens = NovaTheme.getDensity();
+  var rad = NovaTheme.getRadius();
+  document.querySelectorAll('[data-density]').forEach(function (b) {
+    b.classList.toggle('is-active', b.dataset.density === dens);
+  });
+  document.querySelectorAll('[data-radius]').forEach(function (b) {
+    b.classList.toggle('is-active', b.dataset.radius === rad);
+  });
+}
+
+/* Делегированные обработчики — вешаются один раз */
+grid.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-theme-pick]');
+  if (!b) return;
+  NovaTheme.setTheme(b.dataset.themePick);
+  paintActiveTheme();
+  NovaUI.toast('Тема: ' + b.dataset.themePick, 'success');
+});
+
+document.querySelectorAll('.mode-btn').forEach(function (b) {
+  b.addEventListener('click', function () {
+    NovaTheme.setMode(b.dataset.mode);
+    paintModeButtons();
+  });
+});
+
+document.getElementById('density-picker').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-density]');
+  if (!b) return;
+  NovaTheme.setDensity(b.dataset.density);
+  paintPresetButtons();
+});
+
+document.getElementById('radius-picker').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-radius]');
+  if (!b) return;
+  NovaTheme.setRadius(b.dataset.radius);
+  paintPresetButtons();
+});
+
+/* Реагируем на изменения извне (например, из ⌘K-палитры) */
+document.addEventListener('nova:theme-change', function () {
+  paintActiveTheme();
+  paintModeButtons();
+  paintPresetButtons();
+});
+
+renderThemes();
+paintActiveTheme();
+paintModeButtons();
+paintPresetButtons();
+</script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="nova">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playground · Nova UI</title>
+<meta name="theme-color" content="#f6f7fb">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="../assets/js/tailwind.config.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/ui.js"></script>
+</head>
+<body class="bg-bg text-ink min-h-screen">
+
+<header class="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur">
+  <div class="max-w-6xl mx-auto flex items-center gap-3 px-5 h-14">
+    <a href="../index.html" class="btn btn-sm btn-ghost btn-icon"><i data-lucide="arrow-left" class="w-4 h-4"></i></a>
+    <div class="font-display font-extrabold tracking-tight">Playground</div>
+    <div class="ml-auto flex items-center gap-2">
+      <button class="btn btn-sm btn-ghost btn-icon" onclick="NovaTheme.toggleMode()"><i data-lucide="sun-moon" class="w-4 h-4"></i></button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-5 py-10">
+
+  <div class="mb-7">
+    <h2 class="font-display text-3xl font-extrabold tracking-tight">Live-редактор</h2>
+    <p class="text-ink-2 mt-2 max-w-2xl">Меняй пропсы — превью и код обновляются мгновенно. Кнопка «Копировать» кладёт разметку в буфер.</p>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-5">
+
+    <!-- Пропсы -->
+    <div class="card p-6 space-y-6">
+      <div>
+        <label class="lbl">Компонент</label>
+        <div class="flex flex-wrap gap-2" id="compPicker">
+          <button class="btn btn-sm btn-primary" data-comp="button">Кнопка</button>
+          <button class="btn btn-sm btn-secondary" data-comp="badge">Бейдж</button>
+          <button class="btn btn-sm btn-secondary" data-comp="input">Поле</button>
+          <button class="btn btn-sm btn-secondary" data-comp="alert">Алерт</button>
+        </div>
+      </div>
+
+      <hr class="hr">
+
+      <div id="props"></div>
+
+      <hr class="hr">
+
+      <div>
+        <div class="text-xs font-medium text-muted uppercase tracking-wider mb-3">Быстрые настройки</div>
+        <div class="space-y-3">
+          <div>
+            <label class="lbl">Тема</label>
+            <select class="inp" id="pgTheme"></select>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="lbl">Плотность</label>
+              <select class="inp" id="pgDensity">
+                <option value="compact">compact</option>
+                <option value="normal" selected>normal</option>
+                <option value="comfortable">comfortable</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Радиусы</label>
+              <select class="inp" id="pgRadius">
+                <option value="sharp">sharp</option>
+                <option value="normal" selected>normal</option>
+                <option value="pill">pill</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Превью + код -->
+    <div class="space-y-5">
+      <div class="card overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-line">
+          <div class="flex items-center gap-2 text-xs text-muted"><i data-lucide="eye" class="w-4 h-4"></i> Превью</div>
+          <span class="badge badge-neutral" id="pgPreviewBadge">button</span>
+        </div>
+        <div class="p-10 grid place-items-center min-h-[200px] bg-surface-2">
+          <div id="preview"></div>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-line">
+          <div class="flex items-center gap-2 text-xs text-muted"><i data-lucide="code-2" class="w-4 h-4"></i> HTML</div>
+          <button class="btn btn-sm btn-ghost" onclick="copyCode()"><i data-lucide="copy" class="w-3.5 h-3.5"></i> Копировать</button>
+        </div>
+        <pre class="p-4 text-[12px] font-mono overflow-x-auto text-ink-2 leading-relaxed" id="code"></pre>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+lucide.createIcons();
+
+/* ─── Схема пропсов для каждого компонента ─── */
+var SCHEMA = {
+  button: {
+    variant: { type: 'select', label: 'Вариант', options: ['primary','soft','secondary','outline','ghost','danger'], default: 'primary' },
+    size:    { type: 'select', label: 'Размер',  options: ['sm','md','lg'],                                 default: 'md' },
+    label:   { type: 'text',   label: 'Текст',   default: 'Кнопка' },
+    icon:    { type: 'select', label: 'Иконка',  options: ['', 'plus', 'arrow-right', 'download', 'heart', 'settings', 'check'], default: 'plus' },
+    disabled:{ type: 'bool',   label: 'Disabled', default: false },
+  },
+  badge: {
+    variant: { type: 'select', label: 'Вариант', options: ['primary','accent','warn','danger','info','neutral'], default: 'primary' },
+    label:   { type: 'text',   label: 'Текст',   default: 'В работе' },
+    size:    { type: 'select', label: 'Размер',  options: ['md','lg'], default: 'md' },
+    dot:     { type: 'bool',   label: 'С точкой', default: false },
+  },
+  input: {
+    label:       { type: 'text',   label: 'Подпись',     default: 'Email' },
+    placeholder: { type: 'text',   label: 'Placeholder', default: 'you@company.com' },
+    error:       { type: 'bool',   label: 'Ошибка',      default: false },
+    disabled:    { type: 'bool',   label: 'Disabled',    default: false },
+    icon:        { type: 'select', label: 'Иконка',      options: ['', 'search', 'mail', 'user', 'lock'], default: '' },
+  },
+  alert: {
+    variant: { type: 'select', label: 'Тип',    options: ['info','accent','warn','danger'], default: 'info' },
+    title:   { type: 'text',   label: 'Заголовок', default: 'Обновление системы' },
+    text:    { type: 'text',   label: 'Текст',     default: 'Плановые работы 12 мая.' },
+  },
+};
+
+var state = { comp: 'button', props: {}, theme: 'nova', density: 'normal', radius: 'normal' };
+
+/* ─── Инициализация ─── */
+function init() {
+  // темы
+  var themeSelect = document.getElementById('pgTheme');
+  themeSelect.innerHTML = NovaTheme.THEMES.map(function (t) {
+    return '<option value="' + t + '"' + (t === NovaTheme.getTheme() ? ' selected' : '') + '>' + t + '</option>';
+  }).join('');
+  themeSelect.addEventListener('change', function () { NovaTheme.setTheme(this.value); });
+
+  document.getElementById('pgDensity').addEventListener('change', function () { NovaTheme.setDensity(this.value); });
+  document.getElementById('pgRadius').addEventListener('change', function () { NovaTheme.setRadius(this.value); });
+
+  document.getElementById('pgDensity').value = NovaTheme.getDensity();
+  document.getElementById('pgRadius').value = NovaTheme.getRadius();
+
+  // переключатель компонентов
+  document.getElementById('compPicker').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-comp]');
+    if (!b) return;
+    state.comp = b.dataset.comp;
+    document.querySelectorAll('#compPicker [data-comp]').forEach(function (x) {
+      x.classList.toggle('btn-primary', x.dataset.comp === state.comp);
+      x.classList.toggle('btn-secondary', x.dataset.comp !== state.comp);
+    });
+    buildDefaults();
+    render();
+  });
+
+  buildDefaults();
+  render();
+}
+
+function buildDefaults() {
+  var schema = SCHEMA[state.comp];
+  state.props = {};
+  Object.keys(schema).forEach(function (k) {
+    state.props[k] = schema[k].default;
+  });
+  renderProps();
+}
+
+/* ─── Панель пропсов ─── */
+function renderProps() {
+  var schema = SCHEMA[state.comp];
+  var html = '';
+  Object.keys(schema).forEach(function (k) {
+    var s = schema[k];
+    var v = state.props[k];
+    html += '<div class="mb-4">';
+    if (s.type === 'text') {
+      html += '<label class="lbl">' + s.label + '</label>' +
+              '<input class="inp" data-prop="' + k + '" value="' + v + '">';
+    } else if (s.type === 'select') {
+      html += '<label class="lbl">' + s.label + '</label>' +
+              '<select class="inp" data-prop="' + k + '">' +
+              s.options.map(function (o) {
+                return '<option value="' + o + '"' + (o === v ? ' selected' : '') + '>' + (o || '—') + '</option>';
+              }).join('') + '</select>';
+    } else if (s.type === 'bool') {
+      html += '<label class="flex items-center justify-between cursor-pointer">' +
+              '<span class="text-sm">' + s.label + '</span>' +
+              '<span class="relative inline-flex"><input type="checkbox" data-prop="' + k + '" ' + (v ? 'checked' : '') + ' class="sr-only peer">' +
+              '<span class="w-11 h-6 bg-line-2 peer-checked:bg-primary rounded-full relative block transition-colors after:content-[\'\'] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5 after:bg-white after:rounded-full after:shadow after:transition-transform peer-checked:after:translate-x-5"></span></span></label>';
+    }
+    html += '</div>';
+  });
+  var box = document.getElementById('props');
+  box.innerHTML = html;
+
+  box.querySelectorAll('[data-prop]').forEach(function (el) {
+    el.addEventListener('input', function () {
+      var k = el.dataset.prop;
+      state.props[k] = el.type === 'checkbox' ? el.checked : el.value;
+      render();
+    });
+  });
+}
+
+/* ─── Рендер превью и кода ─── */
+function render() {
+  var html = generateHTML();
+  document.getElementById('preview').innerHTML = html;
+  document.getElementById('code').textContent = html;
+  document.getElementById('pgPreviewBadge').textContent = state.comp;
+  lucide.createIcons();
+}
+
+function generateHTML() {
+  var p = state.props;
+
+  if (state.comp === 'button') {
+    var cls = 'btn btn-' + p.size + ' btn-' + p.variant;
+    if (p.icon && !p.label) cls += ' btn-icon';
+    var inner = '';
+    if (p.icon) inner += '<i data-lucide="' + p.icon + '" class="w-4 h-4"></i>';
+    if (p.label) inner += (p.icon ? ' ' : '') + p.label;
+    var dis = p.disabled ? ' disabled' : '';
+    return '<button class="' + cls + '"' + dis + '>' + inner + '</button>';
+  }
+
+  if (state.comp === 'badge') {
+    var bcls = 'badge badge-' + p.variant + (p.size === 'lg' ? ' badge-lg' : '');
+    var bhtml = '';
+    if (p.dot) bhtml += '<span class="w-1.5 h-1.5 rounded-full bg-current"></span> ';
+    bhtml += p.label;
+    return '<span class="' + bcls + '">' + bhtml + '</span>';
+  }
+
+  if (state.comp === 'input') {
+    var inp = '';
+    if (p.label) inp += '<label class="lbl">' + p.label + '</label>';
+    var icons = { search: 'search', mail: 'mail', user: 'user', lock: 'lock' };
+    if (p.icon) {
+      inp += '<div class="relative">' +
+             '<i data-lucide="' + icons[p.icon] + '" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted"></i>' +
+             '<input class="inp pl-10' + (p.error ? ' inp-error' : '') + '" placeholder="' + p.placeholder + '"' +
+             (p.disabled ? ' disabled' : '') + '>' +
+             '</div>';
+    } else {
+      inp += '<input class="inp' + (p.error ? ' inp-error' : '') + '" placeholder="' + p.placeholder + '"' +
+             (p.disabled ? ' disabled' : '') + '>';
+    }
+    if (p.error) inp += '<div class="hint-error"><i data-lucide="alert-circle" class="w-3 h-3 inline -mt-0.5"></i> Некорректное значение</div>';
+    return '<div style="width:100%;max-width:320px">' + inp + '</div>';
+  }
+
+  if (state.comp === 'alert') {
+    var icons = { info: 'info', accent: 'check-circle-2', warn: 'alert-triangle', danger: 'x-circle' };
+    var textColors = { info: 'text-info', accent: 'text-accent', warn: 'text-warn', danger: 'text-danger' };
+    return '<div class="alert alert-' + p.variant + '" style="width:100%;max-width:420px">' +
+             '<i data-lucide="' + icons[p.variant] + '" class="w-5 h-5 ' + textColors[p.variant] + ' shrink-0 mt-0.5"></i>' +
+             '<div><div class="font-semibold">' + p.title + '</div>' +
+             '<div class="text-ink-2 mt-0.5">' + p.text + '</div></div>' +
+           '</div>';
+  }
+  return '';
+}
+
+function copyCode() {
+  NovaUI.copy(document.getElementById('code').textContent);
+}
+
+init();
+</script>
+</body>
+</html>

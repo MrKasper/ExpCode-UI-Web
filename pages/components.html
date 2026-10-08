@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="nova">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Компоненты · ExpCode UI-Web</title>
+<meta name="theme-color" content="#f6f7fb">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="../assets/js/tailwind.config.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/ui.js"></script>
+<style>
+  .demo-section { scroll-margin-top: 80px; }
+  .demo-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .06em; color: rgb(var(--c-muted));
+  }
+</style>
+</head>
+<body class="bg-bg text-ink min-h-screen">
+
+<header class="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur">
+  <div class="max-w-6xl mx-auto flex items-center gap-3 px-5 h-14">
+    <a href="../index.html" class="btn btn-sm btn-ghost btn-icon" aria-label="Назад">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+    </a>
+    <div class="flex items-baseline gap-2 min-w-0">
+      <span class="font-display font-extrabold tracking-tight truncate">Компоненты</span>
+      <span class="text-xs text-muted hidden sm:inline">ExpCode UI-Web</span>
+    </div>
+    <div class="ml-auto flex items-center gap-2">
+      <button class="btn btn-sm btn-ghost btn-icon" onclick="ExpCodeUI.togglePalette()" aria-label="Поиск">
+        <i data-lucide="search" class="w-4 h-4"></i>
+      </button>
+      <button class="btn btn-sm btn-ghost btn-icon" onclick="ExpCodeTheme.toggleMode()" aria-label="Тема">
+        <i data-lucide="sun-moon" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-5 py-10 space-y-14">
+
+  <!-- ═══ Кнопки ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Кнопки</h2>
+    <div class="card p-6 space-y-6">
+      <div>
+        <div class="demo-label mb-3">Варианты</div>
+        <div class="flex flex-wrap items-center gap-3">
+          <button class="btn btn-md btn-primary">Primary</button>
+          <button class="btn btn-md btn-soft">Soft</button>
+          <button class="btn btn-md btn-secondary">Secondary</button>
+          <button class="btn btn-md btn-outline">Outline</button>
+          <button class="btn btn-md btn-ghost">Ghost</button>
+          <button class="btn btn-md btn-danger">Danger</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-label mb-3">Размеры</div>
+        <div class="flex flex-wrap items-center gap-3">
+          <button class="btn btn-sm btn-primary">Small</button>
+          <button class="btn btn-md btn-primary">Medium</button>
+          <button class="btn btn-lg btn-primary">Large</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-label mb-3">С иконками и состояния</div>
+        <div class="flex flex-wrap items-center gap-3">
+          <button class="btn btn-md btn-primary"><i data-lucide="plus" class="w-4 h-4"></i> Создать</button>
+          <button class="btn btn-md btn-secondary"><i data-lucide="download" class="w-4 h-4"></i> Экспорт</button>
+          <button class="btn btn-md btn-ghost btn-icon" aria-label="Настройки"><i data-lucide="settings" class="w-4 h-4"></i></button>
+          <button class="btn btn-md btn-primary" disabled>Disabled</button>
+          <button class="btn btn-md btn-secondary" onclick="ExpCodeUI.toast('Загружено','success')">
+            <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Загрузка…
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Бейджи ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Бейджи</h2>
+    <div class="card p-6 space-y-6">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <span class="badge badge-primary">В работе</span>
+        <span class="badge badge-accent">Готово</span>
+        <span class="badge badge-warn">На паузе</span>
+        <span class="badge badge-danger">Просрочено</span>
+        <span class="badge badge-info">Новое</span>
+        <span class="badge badge-neutral">Черновик</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-2.5">
+        <span class="badge badge-accent"><span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span> Онлайн</span>
+        <span class="badge badge-neutral"><span class="w-1.5 h-1.5 rounded-full bg-muted"></span> Офлайн</span>
+        <span class="badge badge-primary"><i data-lucide="zap" class="w-3 h-3"></i> Приоритет</span>
+        <span class="badge badge-warn"><i data-lucide="clock" class="w-3 h-3"></i> 2 дня</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Поля ввода ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Поля ввода</h2>
+    <div class="card p-6 space-y-6">
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div>
+          <label class="lbl">Обычное</label>
+          <input class="inp" placeholder="Иван Петров">
+        </div>
+        <div>
+          <label class="lbl">С иконкой</label>
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted"></i>
+            <input class="inp pl-10" placeholder="Поиск…">
+          </div>
+        </div>
+        <div>
+          <label class="lbl">Select</label>
+          <select class="inp">
+            <option>Все проекты</option>
+            <option>Активные</option>
+            <option>Архив</option>
+          </select>
+        </div>
+        <div>
+          <label class="lbl">С ошибкой</label>
+          <input class="inp inp-error" value="ivan@">
+          <div class="hint-error">
+            <i data-lucide="alert-circle" class="w-3 h-3 inline -mt-0.5"></i> Некорректный email
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="lbl">Textarea</label>
+        <textarea class="inp" rows="3" placeholder="Опишите задачу…"></textarea>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div>
+          <div class="demo-label mb-4">Checkbox / Radio</div>
+          <div class="space-y-3">
+            <label class="flex items-center gap-2.5 text-sm cursor-pointer">
+              <input type="checkbox" checked class="w-4 h-4 accent-primary"> Уведомления по email
+            </label>
+            <label class="flex items-center gap-2.5 text-sm cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 accent-primary"> Push
+            </label>
+            <label class="flex items-center gap-2.5 text-sm cursor-pointer pt-2">
+              <input type="radio" name="r1" checked class="w-4 h-4 accent-primary"> Все задачи
+            </label>
+            <label class="flex items-center gap-2.5 text-sm cursor-pointer">
+              <input type="radio" name="r1" class="w-4 h-4 accent-primary"> Только мои
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <div class="demo-label mb-4">Switch</div>
+          <div class="space-y-4">
+            <label class="flex items-center justify-between gap-4 cursor-pointer">
+              <span class="text-sm">Автосохранение</span>
+              <span class="relative inline-flex">
+                <input type="checkbox" checked class="sr-only peer">
+                <span class="w-11 h-6 bg-line-2 peer-checked:bg-primary rounded-full transition-colors relative block
+                             after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                             after:w-5 after:h-5 after:bg-white after:rounded-full after:shadow
+                             after:transition-transform peer-checked:after:translate-x-5"></span>
+              </span>
+            </label>
+            <label class="flex items-center justify-between gap-4 cursor-pointer">
+              <span class="text-sm">Тёмная тема</span>
+              <span class="relative inline-flex">
+                <input type="checkbox" class="sr-only peer" onchange="ExpCodeTheme.toggleMode()">
+                <span class="w-11 h-6 bg-line-2 peer-checked:bg-primary rounded-full transition-colors relative block
+                             after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                             after:w-5 after:h-5 after:bg-white after:rounded-full after:shadow
+                             after:transition-transform peer-checked:after:translate-x-5"></span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-label mb-3">Chips (теги)</div>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip">Frontend <button class="x" aria-label="Удалить"><i data-lucide="x" class="w-3 h-3"></i></button></span>
+          <span class="chip">Design <button class="x" aria-label="Удалить"><i data-lucide="x" class="w-3 h-3"></i></button></span>
+          <span class="chip">High priority <button class="x" aria-label="Удалить"><i data-lucide="x" class="w-3 h-3"></i></button></span>
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-label mb-3">OTP-ввод</div>
+        <div class="flex gap-2">
+          <input class="inp text-center font-display text-lg font-bold" style="width:48px" maxlength="1" value="4">
+          <input class="inp text-center font-display text-lg font-bold" style="width:48px" maxlength="1" value="2">
+          <input class="inp text-center font-display text-lg font-bold" style="width:48px" maxlength="1" value="8">
+          <input class="inp text-center font-display text-lg font-bold" style="width:48px" maxlength="1">
+          <input class="inp text-center font-display text-lg font-bold" style="width:48px" maxlength="1">
+          <input class="inp text-center font-display text-lg font-bold" style="width:48px" maxlength="1">
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-label mb-3">Range slider</div>
+        <input type="range" min="0" max="100" value="62" class="w-full accent-primary">
+      </div>
+
+      <!-- Rating -->
+      <div>
+        <div class="demo-label mb-3">Рейтинг</div>
+        <div class="rating" id="rating1" data-value="4" role="radiogroup" aria-label="Рейтинг"></div>
+        <div class="text-xs text-muted mt-2">Текущий: <b id="rating1Value">4</b> из 5 · кликни или используй ← →</div>
+      </div>
+
+      <div>
+        <div class="demo-label mb-3">Рейтинг (компактный)</div>
+        <div class="rating rating-sm" id="rating2" data-value="3" role="radiogroup" aria-label="Рейтинг"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Dropzone ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Dropzone</h2>
+    <div class="card p-6">
+      <label class="block border-2 border-dashed border-line-2 rounded-xl p-10 text-center cursor-pointer
+                    hover:border-primary/60 hover:bg-primary-soft/40 transition-colors">
+        <input type="file" class="hidden" multiple onchange="ExpCodeUI.toast('Файлы загружены','success')">
+        <div class="grid place-items-center w-12 h-12 mx-auto rounded-xl bg-primary-soft text-primary-ink mb-4">
+          <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+        </div>
+        <div class="font-medium">Перетащите файлы или нажмите</div>
+        <div class="text-sm text-muted mt-1">PNG, JPG, PDF до 20 МБ</div>
+      </label>
+    </div>
+  </section>
+
+  <!-- ═══ Аватары ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Аватары</h2>
+    <div class="card p-6 space-y-6">
+      <div>
+        <div class="demo-label mb-4">Размеры</div>
+        <div class="flex items-end gap-4">
+          <div class="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-info grid place-items-center text-white text-[11px] font-semibold">ИП</div>
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-accent to-info grid place-items-center text-white text-xs font-semibold">АС</div>
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-warn to-danger grid place-items-center text-white text-sm font-semibold">МК</div>
+          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent grid place-items-center text-white text-lg font-semibold">ДВ</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-label mb-4">Со статусом</div>
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-info grid place-items-center text-white font-semibold">ИП</div>
+            <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-accent ring-[3px] ring-surface"></span>
+          </div>
+          <div class="relative">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-warn to-danger grid place-items-center text-white font-semibold">МК</div>
+            <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-warn ring-[3px] ring-surface"></span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-label mb-4">Группа</div>
+        <div class="flex -space-x-2.5">
+          <div class="w-10 h-10 rounded-full ring-[3px] ring-surface bg-gradient-to-br from-primary to-info grid place-items-center text-white text-xs font-semibold">ИП</div>
+          <div class="w-10 h-10 rounded-full ring-[3px] ring-surface bg-gradient-to-br from-accent to-info grid place-items-center text-white text-xs font-semibold">АС</div>
+          <div class="w-10 h-10 rounded-full ring-[3px] ring-surface bg-gradient-to-br from-warn to-danger grid place-items-center text-white text-xs font-semibold">МК</div>
+          <div class="w-10 h-10 rounded-full ring-[3px] ring-surface bg-surface-2 border border-line grid place-items-center text-ink-2 text-xs font-semibold">+7</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Карточки ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Карточки</h2>
+
+    <!-- KPI -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+      <div class="card p-6">
+        <div class="flex items-start justify-between">
+          <div class="grid place-items-center w-10 h-10 rounded-xl bg-primary-soft text-primary-ink">
+            <i data-lucide="users" class="w-5 h-5"></i>
+          </div>
+          <span class="badge badge-accent"><i data-lucide="trending-up" class="w-3 h-3"></i> 12%</span>
+        </div>
+        <div class="font-display text-2xl font-extrabold mt-5">2 847</div>
+        <div class="text-xs text-muted mt-1">Пользователи</div>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-start justify-between">
+          <div class="grid place-items-center w-10 h-10 rounded-xl bg-accent-soft text-accent">
+            <i data-lucide="wallet" class="w-5 h-5"></i>
+          </div>
+          <span class="badge badge-accent"><i data-lucide="trending-up" class="w-3 h-3"></i> 8%</span>
+        </div>
+        <div class="font-display text-2xl font-extrabold mt-5">₽ 1.24M</div>
+        <div class="text-xs text-muted mt-1">Выручка</div>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-start justify-between">
+          <div class="grid place-items-center w-10 h-10 rounded-xl bg-warn-soft text-warn">
+            <i data-lucide="target" class="w-5 h-5"></i>
+          </div>
+          <span class="badge badge-danger"><i data-lucide="trending-down" class="w-3 h-3"></i> 3%</span>
+        </div>
+        <div class="font-display text-2xl font-extrabold mt-5">68.4%</div>
+        <div class="text-xs text-muted mt-1">Конверсия</div>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-start justify-between">
+          <div class="grid place-items-center w-10 h-10 rounded-xl bg-info-soft text-info">
+            <i data-lucide="activity" class="w-5 h-5"></i>
+          </div>
+          <span class="badge badge-neutral">—</span>
+        </div>
+        <div class="font-display text-2xl font-extrabold mt-5">1.2s</div>
+        <div class="text-xs text-muted mt-1">Отклик API</div>
+      </div>
+    </div>
+
+    <!-- Профиль (FIXED) -->
+    <div class="card overflow-hidden">
+      <!-- Обложка: НЕ relative, только фон -->
+      <div class="h-28 bg-gradient-to-r from-primary via-info to-accent">
+        <div class="w-full h-full opacity-20"
+             style="background-image:radial-gradient(rgba(255,255,255,.9) 1px, transparent 1px);background-size:14px 14px;"></div>
+      </div>
+
+      <!-- Контент: relative + z-10, чтобы рисоваться выше обложки -->
+      <div class="px-6 pb-6 relative z-10">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div class="flex items-end gap-4 min-w-0">
+            <!-- -mt-10 именно на аватаре, shrink-0, z-10 -->
+            <div class="-mt-10 w-20 h-20 shrink-0 relative z-10
+                        rounded-2xl ring-4 ring-surface
+                        bg-gradient-to-br from-primary to-accent
+                        grid place-items-center text-white text-2xl font-bold">
+              ИП
+            </div>
+            <div class="pb-1 min-w-0">
+              <div class="font-display text-xl font-bold truncate">Иван Петров</div>
+              <div class="text-sm text-muted flex items-center gap-2 mt-0.5 flex-wrap">
+                <span class="badge badge-primary">Product Designer</span>
+                <span class="flex items-center gap-1.5 whitespace-nowrap">
+                  <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span> Онлайн
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-2 pb-1">
+            <button class="btn btn-md btn-secondary">
+              <i data-lucide="mail" class="w-4 h-4"></i> Написать
+            </button>
+            <button class="btn btn-md btn-primary">
+              <i data-lucide="user-plus" class="w-4 h-4"></i> Добавить
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Dropdown / Tooltip ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Dropdown и Tooltip</h2>
+    <div class="card p-6 flex flex-wrap items-center gap-4">
+      <div class="dd">
+        <button class="btn btn-md btn-secondary" data-dd-trigger>
+          Действия <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </button>
+        <div class="dd-menu left">
+          <button class="dd-item"><i data-lucide="edit-3" class="w-4 h-4"></i> Редактировать</button>
+          <button class="dd-item"><i data-lucide="copy" class="w-4 h-4"></i> Дублировать</button>
+          <button class="dd-item"><i data-lucide="share-2" class="w-4 h-4"></i> Поделиться</button>
+          <div class="dd-sep"></div>
+          <button class="dd-item danger"><i data-lucide="trash-2" class="w-4 h-4"></i> Удалить</button>
+        </div>
+      </div>
+
+      <button class="btn btn-md btn-secondary tip" data-tip="Скопировать ссылку">
+        <i data-lucide="link" class="w-4 h-4"></i>
+      </button>
+
+      <button class="btn btn-md btn-primary tip" data-tip="Создать задачу (N)">
+        <i data-lucide="plus" class="w-4 h-4"></i> Новая
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ Навигация ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Навигация</h2>
+    <div class="card p-6 space-y-8">
+      <div>
+        <div class="demo-label mb-3">Breadcrumbs</div>
+        <nav class="crumbs">
+          <a href="#">Проекты</a>
+          <span class="sep">/</span>
+          <a href="#">ExpCode UI-Web</a>
+          <span class="sep">/</span>
+          <span class="text-ink font-medium">Компоненты</span>
+        </nav>
+      </div>
+
+      <div>
+        <div class="demo-label mb-3">Pagination</div>
+        <div class="pg">
+          <button class="pg-btn" disabled aria-label="Назад"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+          <button class="pg-btn is-active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+          <span class="px-1 text-muted">…</span>
+          <button class="pg-btn">12</button>
+          <button class="pg-btn" aria-label="Вперёд"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-label mb-3">Stepper</div>
+        <div class="flex items-center gap-2">
+          <span class="grid place-items-center w-8 h-8 rounded-full bg-primary text-white text-xs font-semibold">
+            <i data-lucide="check" class="w-4 h-4"></i>
+          </span>
+          <span class="h-0.5 flex-1 rounded bg-primary"></span>
+          <span class="grid place-items-center w-8 h-8 rounded-full bg-primary text-white text-xs font-semibold">
+            <i data-lucide="check" class="w-4 h-4"></i>
+          </span>
+          <span class="h-0.5 flex-1 rounded bg-primary"></span>
+          <span class="grid place-items-center w-8 h-8 rounded-full bg-primary text-white text-xs font-semibold ring-4 ring-primary/20">3</span>
+          <span class="h-0.5 flex-1 rounded bg-line-2"></span>
+          <span class="grid place-items-center w-8 h-8 rounded-full bg-surface-2 border border-line text-muted text-xs font-semibold">4</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Табы / Accordion ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Табы и Accordion</h2>
+    <div class="card p-6 space-y-8">
+      <div data-tabs>
+        <div class="inline-flex gap-1 p-1 rounded-xl bg-surface-2 border border-line">
+          <button class="tab is-active" data-tab="a1">Обзор</button>
+          <button class="tab" data-tab="a2">Аналитика</button>
+          <button class="tab" data-tab="a3">Настройки</button>
+        </div>
+        <div class="mt-5 text-sm text-ink-2">
+          <div data-panel="a1">Сводка по проекту: метрики и активность команды.</div>
+          <div data-panel="a2" hidden>Графики и отчёты за период.</div>
+          <div data-panel="a3" hidden>Параметры проекта и интеграции.</div>
+        </div>
+      </div>
+
+      <div data-tabs>
+        <div class="flex gap-5 border-b border-line">
+          <button class="tab-ul is-active" data-tab="b1">Детали</button>
+          <button class="tab-ul" data-tab="b2">Комментарии</button>
+          <button class="tab-ul" data-tab="b3">Вложения</button>
+        </div>
+        <div class="mt-5 text-sm text-ink-2">
+          <div data-panel="b1">Основная информация и поля записи.</div>
+          <div data-panel="b2" hidden>Обсуждение задачи.</div>
+          <div data-panel="b3" hidden>Файлы и макеты.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-label mb-3">Accordion</div>
+        <div class="rounded-xl border border-line">
+          <div class="acc-item open">
+            <button class="acc-head px-4">
+              Что такое ExpCode UI-Web?
+              <i data-lucide="chevron-down" class="chev w-4 h-4"></i>
+            </button>
+            <div class="acc-body px-4">
+              <p>Компонентная система для веб-приложений на Tailwind + Vanilla JS. Разработчик — ExpCode.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-head px-4">
+              Как менять тему?
+              <i data-lucide="chevron-down" class="chev w-4 h-4"></i>
+            </button>
+            <div class="acc-body px-4">
+              <p>Через API <span class="font-mono text-[12px] px-1.5 py-0.5 rounded bg-surface-2 border border-line">ExpCodeTheme.setTheme('midnight')</span>.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-head px-4">
+              Какие пресеты плотности?
+              <i data-lucide="chevron-down" class="chev w-4 h-4"></i>
+            </button>
+            <div class="acc-body px-4">
+              <p>compact, normal и comfortable — переключаются через <span class="font-mono text-[12px] px-1.5 py-0.5 rounded bg-surface-2 border border-line">data-density</span>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Графики ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Графики</h2>
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="card p-6">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <div class="font-display font-bold">Продажи</div>
+            <div class="text-xs text-muted">последние 12 недель</div>
+          </div>
+          <span class="badge badge-accent"><i data-lucide="trending-up" class="w-3 h-3"></i> +18%</span>
+        </div>
+        <svg viewBox="0 0 300 120" class="w-full" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="rgb(var(--c-primary))" stop-opacity=".35"/>
+              <stop offset="100%" stop-color="rgb(var(--c-primary))" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,90 L25,80 L50,85 L75,60 L100,70 L125,45 L150,55 L175,35 L200,40 L225,25 L250,30 L275,15 L300,20 L300,120 L0,120 Z" fill="url(#g1)"/>
+          <path d="M0,90 L25,80 L50,85 L75,60 L100,70 L125,45 L150,55 L175,35 L200,40 L225,25 L250,30 L275,15 L300,20"
+                fill="none" stroke="rgb(var(--c-primary))" stroke-width="2"/>
+        </svg>
+      </div>
+
+      <div class="card p-6">
+        <div class="font-display font-bold mb-1">Задачи по статусу</div>
+        <div class="text-xs text-muted mb-4">за спринт</div>
+        <div class="flex items-center gap-6">
+          <svg viewBox="0 0 100 100" class="w-32 h-32 -rotate-90">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgb(var(--c-surface-2))" stroke-width="14"/>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgb(var(--c-primary))" stroke-width="14"
+                    stroke-dasharray="150 251" stroke-linecap="round"/>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgb(var(--c-accent))" stroke-width="14"
+                    stroke-dasharray="60 251" stroke-dashoffset="-150" stroke-linecap="round"/>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgb(var(--c-warn))" stroke-width="14"
+                    stroke-dasharray="41 251" stroke-dashoffset="-210" stroke-linecap="round"/>
+          </svg>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-primary"></span> В работе <b class="ml-auto">24</b></div>
+            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-accent"></span> Готово <b class="ml-auto">10</b></div>
+            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-warn"></span> На паузе <b class="ml-auto">6</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Kanban ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Kanban-карточки</h2>
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="rounded-2xl bg-surface-2 border border-line p-3">
+        <div class="flex items-center gap-2 px-2 py-1 mb-2">
+          <span class="w-2 h-2 rounded-full bg-primary"></span>
+          <span class="text-sm font-semibold">В работе</span>
+          <span class="badge badge-neutral ml-auto">2</span>
+        </div>
+        <div class="space-y-2">
+          <div class="card p-4 hover:-translate-y-0.5 transition-transform cursor-grab">
+            <div class="flex items-center justify-between mb-2">
+              <span class="badge badge-primary">Feature</span>
+              <i data-lucide="flag" class="w-4 h-4 text-danger"></i>
+            </div>
+            <div class="text-sm font-medium">Редизайн главной</div>
+            <div class="flex flex-wrap gap-1.5 mt-3">
+              <span class="badge badge-neutral">design</span>
+              <span class="badge badge-neutral">ui</span>
+            </div>
+            <div class="flex items-center justify-between mt-3 pt-3 border-t border-line">
+              <div class="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-info grid place-items-center text-white text-[10px] font-semibold">ИП</div>
+              <span class="text-xs text-muted">12 мая</span>
+            </div>
+          </div>
+          <div class="card p-4 hover:-translate-y-0.5 transition-transform cursor-grab">
+            <span class="badge badge-warn mb-2">Bug</span>
+            <div class="text-sm font-medium">Кнопка не реагирует</div>
+            <div class="flex items-center justify-between mt-3 pt-3 border-t border-line">
+              <div class="w-6 h-6 rounded-full bg-gradient-to-br from-accent to-info grid place-items-center text-white text-[10px] font-semibold">АС</div>
+              <span class="text-xs text-danger">Просрочено</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-surface-2 border border-line p-3">
+        <div class="flex items-center gap-2 px-2 py-1 mb-2">
+          <span class="w-2 h-2 rounded-full bg-warn"></span>
+          <span class="text-sm font-semibold">Ревью</span>
+          <span class="badge badge-neutral ml-auto">1</span>
+        </div>
+        <div class="card p-4 cursor-grab">
+          <span class="badge badge-info mb-2">Chore</span>
+          <div class="text-sm font-medium">Обновить зависимости</div>
+          <div class="flex items-center justify-between mt-3 pt-3 border-t border-line">
+            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-warn to-danger grid place-items-center text-white text-[10px] font-semibold">МК</div>
+            <span class="text-xs text-muted">15 мая</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-surface-2 border border-line p-3">
+        <div class="flex items-center gap-2 px-2 py-1 mb-2">
+          <span class="w-2 h-2 rounded-full bg-accent"></span>
+          <span class="text-sm font-semibold">Готово</span>
+          <span class="badge badge-neutral ml-auto">2</span>
+        </div>
+        <div class="space-y-2">
+          <div class="card p-4 cursor-grab">
+            <span class="badge badge-accent mb-2">Done</span>
+            <div class="text-sm font-medium">Интеграция с CRM</div>
+          </div>
+          <div class="card p-4 cursor-grab">
+            <span class="badge badge-accent mb-2">Done</span>
+            <div class="text-sm font-medium">Документация API</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Прогресс / Skeleton ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Прогресс и скелетоны</h2>
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="card p-6 space-y-5">
+        <div>
+          <div class="flex items-center justify-between text-sm mb-2">
+            <span>Загрузка</span><span class="text-muted">72%</span>
+          </div>
+          <div class="pbar"><span style="width:72%"></span></div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-sm mb-2">
+            <span>Спринт</span><span class="text-muted">18 / 24</span>
+          </div>
+          <div class="pbar"><span style="width:58%;background:rgb(var(--c-accent))"></span></div>
+        </div>
+        <div class="pt-2">
+          <button class="btn btn-md btn-primary" onclick="demoSkeleton()">
+            <i data-lucide="play" class="w-4 h-4"></i> Показать skeleton
+          </button>
+        </div>
+        <div id="sk-demo" class="space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-info grid place-items-center text-white text-xs font-semibold">ИП</div>
+            <div class="flex-1">
+              <div class="text-sm font-medium">Иван Петров</div>
+              <div class="text-xs text-muted">Product Designer</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-info grid place-items-center text-white text-xs font-semibold">АС</div>
+            <div class="flex-1">
+              <div class="text-sm font-medium">Анна Смирнова</div>
+              <div class="text-xs text-muted">Frontend Developer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <div class="demo-label mb-4">Статичный skeleton</div>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="sk w-10 h-10" style="border-radius:999px"></div>
+            <div class="flex-1 space-y-2">
+              <div class="sk h-3 w-2/3"></div>
+              <div class="sk h-3 w-1/3"></div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="sk w-10 h-10" style="border-radius:999px"></div>
+            <div class="flex-1 space-y-2">
+              <div class="sk h-3 w-3/4"></div>
+              <div class="sk h-3 w-1/4"></div>
+            </div>
+          </div>
+          <div class="sk h-32 w-full" style="border-radius:var(--r-md)"></div>
+          <div class="sk h-4 w-1/2"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Алерты ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Алерты</h2>
+    <div class="space-y-3">
+      <div class="alert alert-info">
+        <i data-lucide="info" class="w-5 h-5 text-info shrink-0 mt-0.5"></i>
+        <div>
+          <div class="font-semibold">Обновление системы</div>
+          <div class="text-ink-2 mt-0.5">Плановые работы 12 мая с 02:00 до 04:00 МСК.</div>
+        </div>
+      </div>
+      <div class="alert alert-accent">
+        <i data-lucide="check-circle-2" class="w-5 h-5 text-accent shrink-0 mt-0.5"></i>
+        <div>
+          <div class="font-semibold">Сохранено</div>
+          <div class="text-ink-2 mt-0.5">Профиль успешно обновлён.</div>
+        </div>
+      </div>
+      <div class="alert alert-warn">
+        <i data-lucide="alert-triangle" class="w-5 h-5 text-warn shrink-0 mt-0.5"></i>
+        <div>
+          <div class="font-semibold">Истекает подписка</div>
+          <div class="text-ink-2 mt-0.5">Осталось 3 дня. Продлите тариф, чтобы не потерять доступ.</div>
+        </div>
+      </div>
+      <div class="alert alert-danger">
+        <i data-lucide="x-circle" class="w-5 h-5 text-danger shrink-0 mt-0.5"></i>
+        <div>
+          <div class="font-semibold">Ошибка синхронизации</div>
+          <div class="text-ink-2 mt-0.5">Не удалось подключиться к внешнему API. Повторите позже.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Таблица ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Таблица</h2>
+    <div class="card overflow-hidden">
+      <div class="flex flex-wrap items-center gap-3 p-4 border-b border-line">
+        <div class="relative flex-1 min-w-[180px]">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted"></i>
+          <input class="inp pl-10" placeholder="Поиск…">
+        </div>
+        <button class="btn btn-md btn-secondary"><i data-lucide="filter" class="w-4 h-4"></i> Фильтр</button>
+        <button class="btn btn-md btn-primary"><i data-lucide="plus" class="w-4 h-4"></i> Новая</button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wider text-muted border-b border-line">
+              <th class="px-5 py-3 font-semibold w-8"><input type="checkbox" class="w-4 h-4 accent-primary"></th>
+              <th class="px-5 py-3 font-semibold">Задача</th>
+              <th class="px-5 py-3 font-semibold">Статус</th>
+              <th class="px-5 py-3 font-semibold">Приоритет</th>
+              <th class="px-5 py-3 font-semibold text-right">Срок</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-line">
+            <tr class="hover:bg-surface-2 transition-colors">
+              <td class="px-5 py-4"><input type="checkbox" class="w-4 h-4 accent-primary"></td>
+              <td class="px-5 py-4 font-medium">Редизайн главной страницы</td>
+              <td class="px-5 py-4"><span class="badge badge-primary">В работе</span></td>
+              <td class="px-5 py-4"><span class="badge badge-danger"><i data-lucide="flame" class="w-3 h-3"></i> Высокий</span></td>
+              <td class="px-5 py-4 text-right text-muted">12 мая</td>
+            </tr>
+            <tr class="hover:bg-surface-2 transition-colors">
+              <td class="px-5 py-4"><input type="checkbox" class="w-4 h-4 accent-primary"></td>
+              <td class="px-5 py-4 font-medium">Интеграция с CRM</td>
+              <td class="px-5 py-4"><span class="badge badge-warn">На паузе</span></td>
+              <td class="px-5 py-4"><span class="badge badge-warn"><i data-lucide="minus" class="w-3 h-3"></i> Средний</span></td>
+              <td class="px-5 py-4 text-right text-muted">18 мая</td>
+            </tr>
+            <tr class="hover:bg-surface-2 transition-colors">
+              <td class="px-5 py-4"><input type="checkbox" class="w-4 h-4 accent-primary"></td>
+              <td class="px-5 py-4 font-medium">Документация API</td>
+              <td class="px-5 py-4"><span class="badge badge-accent">Готово</span></td>
+              <td class="px-5 py-4"><span class="badge badge-neutral">Низкий</span></td>
+              <td class="px-5 py-4 text-right text-muted">06 мая</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-3 p-4 border-t border-line">
+        <div class="text-xs text-muted">Показано 3 из 128</div>
+        <div class="pg">
+          <button class="pg-btn" disabled aria-label="Назад"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+          <button class="pg-btn is-active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+          <button class="pg-btn" aria-label="Вперёд"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Code block ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Code block</h2>
+    <div class="card overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-2.5 border-b border-line">
+        <div class="flex items-center gap-2 text-xs text-muted">
+          <i data-lucide="code-2" class="w-4 h-4"></i> example.js
+        </div>
+        <button class="btn btn-sm btn-ghost" data-copy="ExpCodeTheme.setTheme('midnight');">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i> Копировать
+        </button>
+      </div>
+<pre class="p-5 text-[13px] font-mono overflow-x-auto text-ink-2"><span style="color:rgb(var(--c-primary-ink))">ExpCodeTheme</span>.<span style="color:rgb(var(--c-accent))">setTheme</span>(<span style="color:rgb(var(--c-warn))">'midnight'</span>);
+<span style="color:rgb(var(--c-primary-ink))">ExpCodeTheme</span>.<span style="color:rgb(var(--c-accent))">setMode</span>(<span style="color:rgb(var(--c-warn))">'dark'</span>);
+<span style="color:rgb(var(--c-primary-ink))">ExpCodeTheme</span>.<span style="color:rgb(var(--c-accent))">setDensity</span>(<span style="color:rgb(var(--c-warn))">'compact'</span>);</pre>
+    </div>
+  </section>
+
+  <!-- ═══ Оверлеи ═══ -->
+  <section class="demo-section">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight mb-5">Оверлеи</h2>
+    <div class="card p-6 flex flex-wrap gap-3">
+      <button class="btn btn-md btn-primary" data-modal-open="demoModal">
+        <i data-lucide="square-stack" class="w-4 h-4"></i> Модалка
+      </button>
+      <button class="btn btn-md btn-secondary" data-modal-open="confirmModal">
+        <i data-lucide="alert-triangle" class="w-4 h-4"></i> Confirm
+      </button>
+      <button class="btn btn-md btn-secondary" data-drawer-open="demoDrawer">
+        <i data-lucide="panel-right" class="w-4 h-4"></i> Drawer
+      </button>
+      <button class="btn btn-md btn-danger" data-toast="Удалено" data-toast-type="error">Danger toast</button>
+      <button class="btn btn-md btn-secondary" data-toast="Изменения сохранены" data-toast-type="success">Success toast</button>
+      <button class="btn btn-md btn-secondary" data-toast="Новое уведомление" data-toast-type="info">Info toast</button>
+      <button class="btn btn-md btn-secondary" data-toast="Проверьте настройки" data-toast-type="warn">Warn toast</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══ Модалка ═══ -->
+<div id="demoModal" class="modal">
+  <div class="absolute inset-0 bg-ink/45 backdrop-blur-sm" data-modal-close="demoModal"></div>
+  <div class="modal-card">
+    <div class="flex items-start gap-4 p-6 border-b border-line">
+      <div class="grid place-items-center w-10 h-10 rounded-xl bg-primary-soft text-primary-ink">
+        <i data-lucide="square-stack" class="w-5 h-5"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="font-display text-lg font-bold">Новая задача</div>
+        <div class="text-sm text-muted mt-0.5">Заполните поля и сохраните.</div>
+      </div>
+      <button class="btn btn-sm btn-ghost btn-icon" data-modal-close="demoModal" aria-label="Закрыть">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div>
+        <label class="lbl">Название</label>
+        <input class="inp" value="Редизайн главной страницы">
+      </div>
+      <div>
+        <label class="lbl">Описание</label>
+        <textarea class="inp" rows="3">Обновить hero-секцию.</textarea>
+      </div>
+    </div>
+    <div class="flex items-center justify-end gap-3 p-6 border-t border-line">
+      <button class="btn btn-md btn-ghost" data-modal-close="demoModal">Отмена</button>
+      <button class="btn btn-md btn-primary"
+              data-modal-close="demoModal"
+              data-toast="Задача создана"
+              data-toast-type="success">
+        <i data-lucide="check" class="w-4 h-4"></i> Сохранить
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Confirm ═══ -->
+<div id="confirmModal" class="modal">
+  <div class="absolute inset-0 bg-ink/45 backdrop-blur-sm" data-modal-close="confirmModal"></div>
+  <div class="modal-card" style="max-width:420px">
+    <div class="p-6 text-center">
+      <div class="grid place-items-center w-14 h-14 mx-auto rounded-2xl bg-danger-soft text-danger mb-4">
+        <i data-lucide="trash-2" class="w-7 h-7"></i>
+      </div>
+      <div class="font-display text-lg font-bold">Удалить задачу?</div>
+      <p class="text-sm text-ink-2 mt-2">Действие необратимо. Все данные будут потеряны.</p>
+    </div>
+    <div class="flex gap-3 p-6 pt-0">
+      <button class="btn btn-md btn-secondary flex-1" data-modal-close="confirmModal">Отмена</button>
+      <button class="btn btn-md btn-danger flex-1"
+              data-modal-close="confirmModal"
+              data-toast="Удалено"
+              data-toast-type="error">Удалить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Drawer ═══ -->
+<div id="demoDrawerScrim" class="scrim" data-drawer-close="demoDrawer"></div>
+<div id="demoDrawer" class="drawer" data-scrim="demoDrawerScrim">
+  <div class="flex items-center gap-3 px-5 h-14 border-b border-line shrink-0">
+    <i data-lucide="settings" class="w-5 h-5 text-muted"></i>
+    <div class="font-display font-bold">Настройки</div>
+    <button class="btn btn-sm btn-ghost btn-icon ml-auto" data-drawer-close="demoDrawer" aria-label="Закрыть">
+      <i data-lucide="x" class="w-4 h-4"></i>
+    </button>
+  </div>
+  <div class="flex-1 p-5 space-y-5 overflow-y-auto">
+    <div>
+      <label class="lbl">Имя</label>
+      <input class="inp" value="Иван Петров">
+    </div>
+    <div>
+      <label class="lbl">Email</label>
+      <input class="inp" value="ivan@company.com">
+    </div>
+    <div>
+      <label class="lbl">Bio</label>
+      <textarea class="inp" rows="3">Product Designer</textarea>
+    </div>
+  </div>
+  <div class="flex items-center justify-end gap-3 p-5 border-t border-line shrink-0">
+    <button class="btn btn-md btn-ghost" data-drawer-close="demoDrawer">Отмена</button>
+    <button class="btn btn-md btn-primary"
+            data-drawer-close="demoDrawer"
+            data-toast="Сохранено"
+            data-toast-type="success">Сохранить</button>
+  </div>
+</div>
+
+<!-- ═══ Command palette ═══ -->
+<div id="expcode-palette" class="modal">
+  <div class="absolute inset-0 bg-ink/40 backdrop-blur-sm" onclick="ExpCodeUI.closePalette()"></div>
+  <div class="modal-card" style="max-width:560px">
+    <div class="flex items-center gap-3 px-4 h-14 border-b border-line">
+      <i data-lucide="search" class="w-5 h-5 text-muted"></i>
+      <input class="w-full bg-transparent border-0 outline-none text-ink placeholder:text-muted"
+             placeholder="Поиск команд…">
+      <kbd class="text-[11px] px-2 py-1 rounded bg-surface-2 border border-line text-muted">ESC</kbd>
+    </div>
+    <div id="expcode-palette-list"></div>
+  </div>
+</div>
+
+<script>
+  /* Иконки */
+  lucide.createIcons();
+
+  /* Демо-skeleton */
+  function demoSkeleton() {
+    var el = document.getElementById('sk-demo');
+    var original = el.innerHTML;
+    el.innerHTML = [1, 2].map(function () {
+      return '<div class="flex items-center gap-3">' +
+        '<div class="sk w-10 h-10" style="border-radius:999px"></div>' +
+        '<div class="flex-1 space-y-2">' +
+          '<div class="sk h-3 w-2/3"></div>' +
+          '<div class="sk h-3 w-1/3"></div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    setTimeout(function () {
+      el.innerHTML = original;
+      lucide.createIcons();
+      ExpCodeUI.toast('Готово', 'success');
+    }, 1200);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="nova">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Основы · Nova UI</title>
+<meta name="theme-color" content="#f6f7fb">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="../assets/js/tailwind.config.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/ui.js"></script>
+</head>
+<body class="bg-bg text-ink min-h-screen">
+
+<header class="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur">
+  <div class="max-w-6xl mx-auto flex items-center gap-3 px-5 h-14">
+    <a href="../index.html" class="btn btn-sm btn-ghost btn-icon"><i data-lucide="arrow-left" class="w-4 h-4"></i></a>
+    <div class="font-display font-extrabold tracking-tight">Основы</div>
+    <div class="ml-auto flex items-center gap-2">
+      <button class="btn btn-sm btn-ghost btn-icon" onclick="NovaUI.togglePalette()"><i data-lucide="search" class="w-4 h-4"></i></button>
+      <button class="btn btn-sm btn-ghost btn-icon" onclick="NovaTheme.toggleMode()"><i data-lucide="sun-moon" class="w-4 h-4"></i></button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-5 py-10 space-y-16">
+
+  <section>
+    <h2 class="font-display text-3xl font-extrabold tracking-tight mb-2">Цвета</h2>
+    <p class="text-ink-2 mb-6 max-w-2xl">Семантические токены на CSS-переменных. Смена темы подменяет значения — компоненты перекрашиваются без изменения разметки.</p>
+
+    <div class="card p-6 sm:p-8">
+      <div class="text-xs font-medium text-muted uppercase tracking-wider mb-4">Поверхности и текст</div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-8" id="sw-surfaces"></div>
+
+      <div class="text-xs font-medium text-muted uppercase tracking-wider mb-4">Акценты и статусы</div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" id="sw-accents"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="font-display text-3xl font-extrabold tracking-tight mb-2">Типографика</h2>
+    <p class="text-ink-2 mb-6 max-w-2xl">Inter — интерфейс, Manrope — заголовки и цифры. Line-height для текста 1.6.</p>
+
+    <div class="card p-6 sm:p-8 space-y-6">
+      <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+        <span class="text-[11px] text-muted w-24 shrink-0">Display / 48</span>
+        <span class="font-display text-5xl font-extrabold tracking-tight">Заголовок</span>
+      </div>
+      <hr class="hr">
+      <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+        <span class="text-[11px] text-muted w-24 shrink-0">H2 / 30</span>
+        <span class="font-display text-3xl font-bold tracking-tight">Секция</span>
+      </div>
+      <hr class="hr">
+      <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+        <span class="text-[11px] text-muted w-24 shrink-0">H3 / 20</span>
+        <span class="font-display text-xl font-bold">Подзаголовок</span>
+      </div>
+      <hr class="hr">
+      <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+        <span class="text-[11px] text-muted w-24 shrink-0">Body / 15</span>
+        <span class="text-[15px] text-ink-2">Основной текст интерфейса с комфортным межстрочным интервалом.</span>
+      </div>
+      <hr class="hr">
+      <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+        <span class="text-[11px] text-muted w-24 shrink-0">Small / 13</span>
+        <span class="text-[13px] text-muted">Второстепенный текст, подписи, хинты.</span>
+      </div>
+      <hr class="hr">
+      <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+        <span class="text-[11px] text-muted w-24 shrink-0">Mono</span>
+        <span class="font-mono text-[13px] px-2 py-1 rounded-lg bg-surface-2 border border-line">.btn-primary</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="font-display text-3xl font-extrabold tracking-tight mb-2">Ритм и радиусы</h2>
+    <p class="text-ink-2 mb-6 max-w-2xl">Шкала 4 / 8 / 12 / 16 / 24 / 32 / 48. Радиусы — от <span class="font-mono text-[13px]">.r-sm</span> до <span class="font-mono text-[13px]">.r-xl</span>, управляются пресетом <span class="font-mono text-[13px]">data-radius</span>.</p>
+
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="card p-6">
+        <div class="text-xs font-medium text-muted uppercase tracking-wider mb-5">Шкала отступов</div>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3"><span class="w-10 text-[11px] text-muted">4</span><div class="h-3 rounded bg-primary/25" style="width:4px"></div></div>
+          <div class="flex items-center gap-3"><span class="w-10 text-[11px] text-muted">8</span><div class="h-3 rounded bg-primary/35" style="width:8px"></div></div>
+          <div class="flex items-center gap-3"><span class="w-10 text-[11px] text-muted">12</span><div class="h-3 rounded bg-primary/45" style="width:12px"></div></div>
+          <div class="flex items-center gap-3"><span class="w-10 text-[11px] text-muted">16</span><div class="h-3 rounded bg-primary/55" style="width:16px"></div></div>
+          <div class="flex items-center gap-3"><span class="w-10 text-[11px] text-muted">24</span><div class="h-3 rounded bg-primary/70" style="width:24px"></div></div>
+          <div class="flex items-center gap-3"><span class="w-10 text-[11px] text-muted">32</span><div class="h-3 rounded bg-primary/85" style="width:32px"></div></div>
+          <div class="flex items-center gap-3"><span class="w-10 text-[11px] text-muted">48</span><div class="h-3 rounded bg-primary" style="width:48px"></div></div>
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <div class="text-xs font-medium text-muted uppercase tracking-wider mb-5">Радиусы</div>
+        <div class="grid grid-cols-3 gap-4">
+          <div class="text-center"><div class="h-16 bg-primary-soft border border-primary/25" style="border-radius:var(--r-sm)"></div><div class="text-[11px] text-muted mt-2 font-mono">r-sm</div></div>
+          <div class="text-center"><div class="h-16 bg-primary-soft border border-primary/25" style="border-radius:var(--r-md)"></div><div class="text-[11px] text-muted mt-2 font-mono">r-md</div></div>
+          <div class="text-center"><div class="h-16 bg-primary-soft border border-primary/25" style="border-radius:var(--r-lg)"></div><div class="text-[11px] text-muted mt-2 font-mono">r-lg</div></div>
+          <div class="text-center"><div class="h-16 bg-primary-soft border border-primary/25" style="border-radius:var(--r-xl)"></div><div class="text-[11px] text-muted mt-2 font-mono">r-xl</div></div>
+          <div class="text-center"><div class="h-16 bg-primary-soft border border-primary/25" style="border-radius:999px"></div><div class="text-[11px] text-muted mt-2 font-mono">full</div></div>
+          <div class="text-center">
+            <div class="h-16 bg-primary-soft border border-primary/25 flex items-center justify-center gap-1" style="border-radius:var(--r-md)">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            </div>
+            <div class="text-[11px] text-muted mt-2 font-mono">data-radius</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="font-display text-3xl font-extrabold tracking-tight mb-2">Тени и подсветки</h2>
+    <div class="grid sm:grid-cols-3 gap-5">
+      <div class="bg-surface border border-line rounded-2xl p-6" style="box-shadow:0 1px 2px rgb(16 24 40 / .04),0 1px 3px rgb(16 24 40 / .06)">
+        <div class="text-sm font-semibold">card</div>
+        <div class="text-xs text-muted mt-1">Карточки, панели</div>
+      </div>
+      <div class="bg-surface border border-line rounded-2xl p-6" style="box-shadow:0 18px 40px -18px rgb(16 24 40 / .3)">
+        <div class="text-sm font-semibold">pop</div>
+        <div class="text-xs text-muted mt-1">Модалки, dropdown</div>
+      </div>
+      <div class="bg-surface border border-line rounded-2xl p-6" style="box-shadow:0 0 40px -12px rgb(var(--c-primary) / .55)">
+        <div class="text-sm font-semibold">glow</div>
+        <div class="text-xs text-muted mt-1">Акцентные CTA</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="font-display text-3xl font-extrabold tracking-tight mb-2">Анимации</h2>
+    <p class="text-ink-2 mb-6">Единые кривые и длительности.</p>
+    <div class="card p-6">
+      <div class="grid sm:grid-cols-3 gap-6 text-sm">
+        <div><div class="font-mono text-xs text-muted">--dur-fast</div><div class="font-display text-2xl font-bold">150ms</div></div>
+        <div><div class="font-mono text-xs text-muted">--dur-base</div><div class="font-display text-2xl font-bold">250ms</div></div>
+        <div><div class="font-mono text-xs text-muted">--dur-slow</div><div class="font-display text-2xl font-bold">350ms</div></div>
+      </div>
+      <div class="mt-6 font-mono text-xs text-muted break-all">cubic-bezier(.2, .8, .2, 1)</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+lucide.createIcons();
+
+function rgb(name) { return getComputedStyle(document.documentElement).getPropertyValue('--c-' + name).trim(); }
+
+var surfaces = [
+  ['bg','Фон'],['bg-soft','Фон soft'],['surface','Surface'],['surface-2','Surface 2'],
+  ['line','Line'],['line-2','Line 2'],['ink','Ink'],['ink-2','Ink 2'],['muted','Muted']
+];
+var accents = [
+  ['primary','Primary'],['primary-soft','Primary soft'],
+  ['accent','Accent'],['warn','Warning'],['danger','Danger'],['info','Info']
+];
+
+function render(target, list) {
+  document.getElementById(target).innerHTML = list.map(function (it) {
+    return '<div class="rounded-xl border border-line overflow-hidden bg-surface">' +
+      '<div class="h-14" style="background: rgb(' + rgb(it[0]) + ')"></div>' +
+      '<div class="px-3 py-2.5"><div class="text-[12px] font-medium">' + it[1] + '</div>' +
+      '<div class="text-[11px] text-muted font-mono">--c-' + it[0] + '</div></div></div>';
+  }).join('');
+}
+render('sw-surfaces', surfaces);
+render('sw-accents', accents);
+</script>
+</body>
+</html>
